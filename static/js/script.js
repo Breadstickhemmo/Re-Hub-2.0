@@ -32,12 +32,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     hideLogin();
 });
 
-  
-  // Функция для начала оценки
-  function startEvaluation() {
-    alert("Запуск оценки совместимости. Ожидайте дальнейшей разработки.");
-  }
-
 document.addEventListener('DOMContentLoaded', function() {
     // Найти все flash-сообщения
     document.querySelectorAll('.flash-message').forEach(function(message) {
@@ -52,3 +46,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000); // Общее время: 1 секунда задержки + 1 секунда на анимацию
     });
 });
+
+// Функция для начала оценки
+function startTaro() {
+    alert("Запуск оценки совместимости. Ожидайте дальнейшей разработки.");
+}
+
+// Функция для начала оценки
+function startKosmo() {
+    alert("Запуск оценки совместимости. Ожидайте дальнейшей разработки.");
+}

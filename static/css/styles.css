@@ -94,6 +94,15 @@ header h1 {
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 }
 
+.evaluation-section {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.evaluation-section h2 {
+    margin-bottom: 1rem;
+}
+
 /* Класс для кнопки "Начать" */
 .button-start {
     background: linear-gradient(135deg, #8A2BE2, #9A4DFF);
@@ -150,14 +159,14 @@ header h1 {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     color: #FFFFFF;
     text-align: left;
-    z-index: 9999; /* Чтобы форма была поверх других элементов */
+    z-index: 9999;
 }
 
 #registration h2 {
     text-align: center;
     font-size: 1.8rem;
     margin-bottom: 1rem;
-    color: #FFD700; /* Золотистый акцент */
+    color: #FFD700;
 }
 
 #registration label {
