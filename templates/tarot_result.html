@@ -62,9 +62,74 @@
         <button onclick="hideLogin()" class="button-cancel-login">Отмена</button>
     </section>
 
-    <!-- Основное тело с описанием инструмента и кнопкой для запуска оценки -->
     <main>
-
+        <div class="tarot-result-container">
+            <h2 class="result-title">Результат расклада Таро</h2>
+            <div class="card-selection">
+                <p><strong class="card-name">{{ card_name }}</strong></p>
+                <p class="card-description">{{ card_description }}</p>
+            </div>
+            <h3 class="users-title">Список пользователей</h3>
+            <!-- Форма фильтрации -->
+            <div class="filter-section">
+                <form action="/tarot_result" method="post">
+                    <label for="jobpos_filter">Фильтр по должности:</label>
+                    <select id="jobpos_filter" name="jobpos_filter">
+                        <option value="">Все</option>
+                        {% for position in job_positions %}
+                            <option value="{{ position.jobpos }}" {% if jobpos_filter == position.jobpos %}selected{% endif %}>{{ position.jobpos }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="birth_day" value="{{ bday }}">
+                    <input type="hidden" name="birth_month" value="{{ bmonth }}">
+                    <input type="hidden" name="birth_year" value="{{ byear }}">
+                    <input type="hidden" name="position" value="{{ jobpos }}">
+                    <button type="submit" class="button-filter">Фильтровать</button>
+                </form>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>{{ session['username'] }}</th>
+                        <th>{{ jobpos }}</th>
+                        <th>Совместимость</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    {% if user.username != session['username'] %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.jobpos }}</td>
+                        <td>
+                            <form action="/check_user" method="post">
+                                <input type="hidden" name="username" value="{{ user.username }}">
+                                <button type="submit" class="button-check">Проверить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+    
+            <!-- Пагинация -->
+            <div class="pagination">
+                {% if current_page > 1 %}
+                    <a href="{{ url_for('tarot_result', page=current_page - 1, jobpos_filter=jobpos_filter) }}">« Назад</a>
+                {% endif %}
+                {% for page_num in range(1, total_pages + 1) %}
+                    {% if page_num == current_page %}
+                        <strong>{{ page_num }}</strong>
+                    {% else %}
+                        <a href="{{ url_for('tarot_result', page=page_num, jobpos_filter=jobpos_filter) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if current_page < total_pages %}
+                    <a href="{{ url_for('tarot_result', page=current_page + 1, jobpos_filter=jobpos_filter) }}">Вперед »</a>
+                {% endif %}
+            </div>
+        </div>
     </main>
 
     <!-- Footer с информацией о компании и ссылками на соцсети -->

@@ -6,9 +6,13 @@ import os
 app = Flask(__name__)
 app.secret_key = 'qwertyuiop'
 
-# Функция для подключения к базе данных
 def get_db_connection():
     conn = sqlite3.connect('users.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def get_tarot_db_connection():
+    conn = sqlite3.connect('tarot_cards_new.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -31,6 +35,7 @@ def init_db():
                 bmonth INTEGER,
                 byear INTEGER,
                 jobpos TEXT,
+                card_id INTEGER,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
         ''')
@@ -146,10 +151,34 @@ def change_password():
 @app.route('/tarot', methods=['POST'])
 def tarot():
     if 'username' in session:
-        return render_template('tarot.html')
+        user_id = session['user_id']
+
+        conn = get_db_connection()
+        existing_entry = conn.execute(
+            'SELECT bday, bmonth, byear, jobpos FROM tarot WHERE user_id = ?',
+            (user_id,)
+        ).fetchone()
+        conn.close()
+
+        if existing_entry:
+            return render_template('tarot.html', 
+                                   bday=existing_entry['bday'], 
+                                   bmonth=existing_entry['bmonth'], 
+                                   byear=existing_entry['byear'], 
+                                   jobpos=existing_entry['jobpos'])
+        else:
+            return render_template('tarot.html')
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к раскладу.", "error")
         return redirect(url_for('index'))
+
+def calculate_date_value(day, month, year):
+    digits_sum = sum(int(digit) for digit in f"{day}{month}{year}")
+    
+    while digits_sum > 22:
+        digits_sum -= 22
+    
+    return digits_sum
 
 @app.route('/tarot_result', methods=['POST'])
 def tarot_result():
@@ -159,29 +188,75 @@ def tarot_result():
         bmonth = request.form['birth_month']
         byear = request.form['birth_year']
         jobpos = request.form['position']
+        jobpos_filter = request.form.get('jobpos_filter')
+
+        card_id = calculate_date_value(bday, bmonth, byear)
 
         conn = get_db_connection()
         try:
             with conn:
+                tarot_conn = get_tarot_db_connection()
+                card = tarot_conn.execute(
+                    'SELECT name, description FROM tarot_cards_new WHERE id = ?',
+                    (card_id,)
+                ).fetchone()
+                tarot_conn.close()
+
+                if not card:
+                    flash('Карта не найдена.', 'error')
+                    return redirect(url_for('index'))
+
                 existing_entry = conn.execute(
                     'SELECT * FROM tarot WHERE user_id = ?',
                     (user_id,)
                 ).fetchone()
+
                 if existing_entry:
                     conn.execute(
-                        'UPDATE tarot SET bday = ?, bmonth = ?, byear = ?, jobpos = ? WHERE user_id = ?',
-                        (bday, bmonth, byear, jobpos, user_id)
+                        'UPDATE tarot SET bday = ?, bmonth = ?, byear = ?, jobpos = ?, card_id = ? WHERE user_id = ?',
+                        (bday, bmonth, byear, jobpos, card_id, user_id)
                     )
                     flash('Данные успешно обновлены!', 'success')
                 else:
                     conn.execute(
-                        'INSERT INTO tarot (user_id, bday, bmonth, byear, jobpos) VALUES (?, ?, ?, ?, ?)',
-                        (user_id, bday, bmonth, byear, jobpos)
+                        'INSERT INTO tarot (user_id, bday, bmonth, byear, jobpos, card_id) VALUES (?, ?, ?, ?, ?, ?)',
+                        (user_id, bday, bmonth, byear, jobpos, card_id)
                     )
                     flash('Данные успешно сохранены!', 'success')
-            return render_template('tarot_result.html', user_id=user_id, bday=bday, bmonth=bmonth, byear=byear, jobpos=jobpos)
+
+                page = request.args.get('page', 1, type=int)
+                per_page = 10
+                offset = (page - 1) * per_page
+
+                query = 'SELECT u.username, t.jobpos FROM users u LEFT JOIN tarot t ON u.id = t.user_id'
+                if jobpos_filter:
+                    query += ' WHERE t.jobpos = ?'
+                    users = conn.execute(query, (jobpos_filter,)).fetchall()
+                else:
+                    users = conn.execute(query).fetchall()
+
+                total_users = len(users)
+                users = users[offset:offset + per_page]
+
+                total_pages = (total_users + per_page - 1) // per_page
+
+                job_positions = conn.execute('SELECT DISTINCT jobpos FROM tarot').fetchall()
+
+            return render_template('tarot_result.html',
+                                   user_id=user_id,
+                                   bday=bday,
+                                   bmonth=bmonth,
+                                   byear=byear,
+                                   jobpos=jobpos,
+                                   card_name=card['name'],
+                                   card_description=card['description'],
+                                   users=users,
+                                   total_pages=total_pages,
+                                   current_page=page,
+                                   jobpos_filter=jobpos_filter,
+                                   job_positions=job_positions)  # Передаем уникальные должности
         except Exception as e:
-            flash('Произошла ошибка при сохранении данных.', 'error')
+            flash(f'Произошла ошибка при сохранении данных: {e}', 'error')
             return redirect(url_for('index'))
         finally:
             conn.close()

@@ -62,42 +62,44 @@
         <button onclick="hideLogin()" class="button-cancel-login">Отмена</button>
     </section>
 
-    <!-- Основное тело с описанием инструмента и кнопкой для запуска оценки -->
+    <!-- Основное тело -->
     <main>
         <section>
             <h2>Расклад картами Таро</h2>
             <form id="tarotForm" action="/tarot_result" method="post">
                 <label for="birth-day">День рождения:</label>
                 <select id="birth-day" name="birth_day" required>
+                    <option value="" disabled {% if not bday %}selected{% endif %}>Выберите день</option>
                     {% for day in range(1, 32) %}
-                        <option value="{{ day }}">{{ day }}</option>
+                        <option value="{{ day }}" {% if bday == day %}selected{% endif %}>{{ day }}</option>
                     {% endfor %}
                 </select>
-
+            
                 <label for="birth-month">Месяц рождения:</label>
                 <select id="birth-month" name="birth_month" required>
+                    <option value="" disabled {% if not bmonth %}selected{% endif %}>Выберите месяц</option>
                     {% for month in range(1, 13) %}
-                        <option value="{{ month }}">{{ month }}</option>
+                        <option value="{{ month }}" {% if bmonth == month %}selected{% endif %}>{{ month }}</option>
                     {% endfor %}
                 </select>
-
+            
                 <label for="birth-year">Год рождения:</label>
                 <select id="birth-year" name="birth_year" required>
+                    <option value="" disabled {% if not byear %}selected{% endif %}>Выберите год</option>
                     {% for year in range(1900, 2024) %}
-                        <option value="{{ year }}">{{ year }}</option>
+                        <option value="{{ year }}" {% if byear == year %}selected{% endif %}>{{ year }}</option>
                     {% endfor %}
                 </select>
-
+            
                 <label for="position">Должность:</label>
                 <select id="position" name="position" required>
-                    <option value="junior">Junior</option>
-                    <option value="middle">Middle</option>
-                    <option value="senior">Senior</option>
-                    <option value="teamlead">Team Lead</option>
+                    <option value="junior" {% if jobpos == 'junior' %}selected{% endif %}>Junior</option>
+                    <option value="middle" {% if jobpos == 'middle' %}selected{% endif %}>Middle</option>
+                    <option value="senior" {% if jobpos == 'senior' %}selected{% endif %}>Senior</option>
+                    <option value="teamlead" {% if jobpos == 'teamlead' %}selected{% endif %}>Team Lead</option>
                 </select>
-                <form id="tarotForm" action="/tarot_result" method="post">
-                    <button type="submit" class="button-tarot">МАГИЯ</button>
-                </form>
+            
+                <button type="submit" class="button-tarot">МАГИЯ</button>
             </form>
         </section>
     </main>

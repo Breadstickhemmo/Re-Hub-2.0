@@ -518,3 +518,149 @@ footer .social-links a:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
+
+.tarot-result-container {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    max-width: 800px;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+.result-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #FFD700;
+}
+
+.card-selection {
+    margin-bottom: 2rem;
+}
+
+.card-name {
+    font-size: 1.5rem;
+    color: #FFD700;
+    margin-bottom: 0.5rem;
+}
+
+.card-description {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.users-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #FFD700;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.users-table th, .users-table td {
+    padding: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.users-table th {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.button-check {
+    background: linear-gradient(135deg, #8A2BE2, #9A4DFF);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.button-check:hover {
+    background: linear-gradient(135deg, #9A4DFF, #8A2BE2);
+    transform: translateY(-3px);
+}
+
+/* Стили для фильтрации */
+.filter-section {
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center; /* Центрирование содержимого */
+    align-items: center;
+}
+
+.filter-section label {
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    color: #FFD700; /* Цвет меток */
+}
+
+.filter-section select {
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF; /* Цвет текста в выпадающем списке */
+    font-size: 1rem;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.filter-section select option {
+    color: #000000; /* Цвет текста в выпадающем списке */
+}
+
+.filter-section select:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Стили для кнопки фильтрации */
+.button-filter {
+    background: linear-gradient(135deg, #8A2BE2, #9A4DFF);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    margin-left: 0.5rem; /* Отступ слева для кнопки */
+}
+
+.button-filter:hover {
+    background: linear-gradient(135deg, #9A4DFF, #8A2BE2);
+    transform: translateY(-3px);
+}
+
+/* Стили для пагинации */
+.pagination {
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination a {
+    background: rgba(10, 149, 192, 0.9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    margin: 0 0.5rem;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.pagination a:hover {
+    background: rgba(12, 194, 181, 1.0);
+    transform: translateY(-3px);
+}
+
+.pagination strong {
+    margin: 0 0.5rem;
+    color: #FFD700;
+}
