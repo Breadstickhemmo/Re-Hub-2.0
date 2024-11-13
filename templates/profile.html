@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профиль</title>
+  <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('index') }}" class="site-title"><h1>Re Hub</h1></a>
+    </header>
+
+    <main>
+        <section class="profile">
+            <h2>Профиль пользователя: {{ session['username'] }}</h2>
+            
+            <h3>Изменить пароль</h3>
+            <form action="{{ url_for('change_password') }}" method="post">
+                <label for="current_password">Текущий пароль</label>
+                <input type="password" id="current_password" name="current_password" required>
+
+                <label for="new_password">Новый пароль</label>
+                <input type="password" id="new_password" name="new_password" required>
+
+                <label for="confirm_password">Подтвердите новый пароль</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+
+                <button type="submit" class="button-update">Обновить пароль</button>
+            </form>
+
+            <form action="{{ url_for('logout') }}" method="post">
+                <button type="submit" class="button-logout">Выйти из аккаунта</button>
+            </form>
+        </section>
+    </main>
+    <!-- Footer с информацией о компании и ссылками на соцсети -->
+    <footer>
+        <p>&copy; 2024 Re Hub. Все права защищены.</p>
+        <div class="social-links">
+        <a href="#">Telegram</a>
+        </div>
+    </footer>
+</body>
+</html>

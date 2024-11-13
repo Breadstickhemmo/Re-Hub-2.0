@@ -12,7 +12,7 @@
         <a href="{{ url_for('index') }}" class="site-title"><h1>Re Hub</h1></a>
         <nav>
             {% if 'username' in session %}
-                <span>Добро пожаловать, {{ session['username'] }}!</span>
+            <a href="{{ url_for('profile') }}" class="user-profile">{{ session['username'] }}</a>
                 <form action="{{ url_for('logout') }}" method="post" style="display: inline;">
                     <button type="submit" class="button-header">Выйти</button>
                 </form>
@@ -84,9 +84,7 @@
     <footer>
         <p>&copy; 2024 Re Hub. Все права защищены.</p>
         <div class="social-links">
-        <a href="#">Facebook</a>
-        <a href="#">LinkedIn</a>
-        <a href="#">Twitter</a>
+        <a href="#">Telegram</a>
         </div>
     </footer>
 

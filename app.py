@@ -92,5 +92,46 @@ def logout():
     flash('Вы вышли из системы.')
     return redirect(url_for('index'))
 
+@app.route('/profile')
+def profile():
+    if 'username' in session:
+        return render_template('profile.html')
+    else:
+        flash("Пожалуйста, войдите, чтобы получить доступ к профилю.", "error")
+        return redirect(url_for('login'))
+
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    if 'username' in session:
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if new_password != confirm_password:
+            flash("Новый пароль и подтверждение не совпадают.", "error")
+            return redirect(url_for('profile'))
+
+        # Подключение к базе данных и проверка текущего пароля
+        conn = get_db_connection()
+        user = conn.execute('SELECT * FROM users WHERE username = ?', (session['username'],)).fetchone()
+        
+        if not check_password_hash(user['password'], current_password):
+            flash("Неверный текущий пароль.", "error")
+            conn.close()
+            return redirect(url_for('profile'))
+        
+        # Обновление пароля в базе данных
+        hashed_password = generate_password_hash(new_password, method='sha256')
+        conn.execute('UPDATE users SET password = ? WHERE username = ?', (hashed_password, session['username']))
+        conn.commit()
+        conn.close()
+
+        flash("Пароль успешно изменен.", "success")
+        return redirect(url_for('profile'))
+    else:
+        flash("Пожалуйста, войдите для выполнения этого действия.", "error")
+        return redirect(url_for('login'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
