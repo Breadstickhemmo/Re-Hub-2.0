@@ -42,7 +42,7 @@ def register():
     password = request.form['password']
 
     # Хэшируем пароль
-    hashed_password = generate_password_hash(password, method='sha256')
+    hashed_password = generate_password_hash(password, method='pbkdf2:sha256:600000')
 
     # Подключаемся к базе данных и добавляем пользователя
     conn = get_db_connection()
@@ -98,7 +98,7 @@ def profile():
         return render_template('profile.html')
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к профилю.", "error")
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
 
 @app.route('/change_password', methods=['POST'])
 def change_password():
@@ -121,7 +121,7 @@ def change_password():
             return redirect(url_for('profile'))
         
         # Обновление пароля в базе данных
-        hashed_password = generate_password_hash(new_password, method='sha256')
+        hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256:600000')
         conn.execute('UPDATE users SET password = ? WHERE username = ?', (hashed_password, session['username']))
         conn.commit()
         conn.close()
@@ -130,7 +130,7 @@ def change_password():
         return redirect(url_for('profile'))
     else:
         flash("Пожалуйста, войдите для выполнения этого действия.", "error")
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
     
 @app.route('/tarot', methods=['POST'])
 def tarot():
@@ -138,7 +138,7 @@ def tarot():
         return render_template('tarot.html')
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к раскладу.", "error")
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
 
 @app.route('/cosmos', methods=['POST'])
 def cosmos():
@@ -146,7 +146,7 @@ def cosmos():
         return render_template('cosmos.html')
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к рассчёту.", "error")
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
