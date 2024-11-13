@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Re Hub - Инновационный рекрутерский инструмент</title>
+  <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <!-- Header с названием сайта и кнопками регистрации и входа -->
+    <header>
+        <a href="{{ url_for('index') }}" class="site-title"><h1>Re Hub</h1></a>
+        <nav>
+            {% if 'username' in session %}
+            <a href="{{ url_for('profile') }}" class="user-profile">{{ session['username'] }}</a>
+                <form action="{{ url_for('logout') }}" method="post" style="display: inline;">
+                    <button type="submit" class="button-header">Выйти</button>
+                </form>
+            {% else %}
+                <button class="button-header" onclick="showRegister()">Регистрация</button>
+                <button class="button-header" onclick="showLogin()">Вход</button>
+            {% endif %}
+        </nav>
+    </header>
+
+    <!-- Затемнение фона -->
+    <div id="registration-overlay" style="display: none;" onclick="hideRegistration()"></div>
+
+    <!-- Форма регистрации -->
+    <section id="registration" style="display: none;">
+        <h2>Регистрация</h2>
+        <form id="registrationForm" action="/register" method="post">
+            <label for="username">Имя пользователя</label>
+            <input type="text" id="username" name="username" required>
+        
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        
+            <label for="password">Пароль</label>
+            <input type="password" id="password" name="password" required>
+        
+            <button type="submit" class="button-register">Зарегистрироваться</button>
+        </form>
+        <button onclick="hideRegistration()" class="button-cancel">Отмена</button>
+    </section>
+
+    <!-- Затемнение фона для формы логина -->
+    <div id="login-overlay" style="display: none;" onclick="hideLogin()"></div>
+
+    <!-- Форма логина -->
+    <section id="login" style="display: none;">
+        <h2>Вход</h2>
+        <form id="loginForm" action="/login" method="post">
+            <label for="login-username">Имя пользователя</label>
+            <input type="text" id="login-username" name="username" required>
+        
+            <label for="login-password">Пароль</label>
+            <input type="password" id="login-password" name="password" required>
+        
+            <button type="submit" class="button-login">Войти</button>
+        </form>        
+        <button onclick="hideLogin()" class="button-cancel-login">Отмена</button>
+    </section>
+
+    <main>
+        <section class="compatibility">
+            <h2 class="compatibility-title">Совместимость между {{ session['username'] }} и {{ selected_username }}</h2>
+            {% if results %}
+                <div class="card-selection">
+                    <p class="card-label"><strong>Ваша карта</strong></p>
+                    <p class="card-name">{{ results.card_name1 }}</p>
+                    <p class="card-description">{{ results.card_description1 }}</p>
+                </div>
+                <div class="card-selection">
+                    <p class="card-label"><strong>Карта выбранного пользователя</strong></p>
+                    <p class="card-name">{{ results.card_name2 }}</p>
+                    <p class="card-description">{{ results.card_description2 }}</p>
+                </div>
+                <div class="card-selection">
+                    <p class="card-label"><strong>Общая карта</strong></p>
+                    <p class="card-name">{{ results.total_card_name }}</p>
+                    <p class="card-description">{{ results.total_card_description }}</p>
+                </div>
+            {% else %}
+                <p>Недостаточно данных для расчета совместимости.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <!-- Footer с информацией о компании и ссылками на соцсети -->
+    <footer>
+        <p>&copy; 2024 Re Hub. Все права защищены.</p>
+        <div class="social-links">
+        <a href="https://t.me/Doma_superbl">Telegram</a>
+        </div>
+    </footer>
+
+    <script src="../static/js/script.js"></script>
+</body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for category, message in messages %}
+        <li class="flash-message {{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+</html>

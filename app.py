@@ -264,6 +264,58 @@ def tarot_result():
         flash("Пожалуйста, войдите, чтобы сохранить данные.", "error")
         return redirect(url_for('index'))
 
+@app.route('/check_user', methods=['POST'])
+def check_user():
+    if 'user_id' in session:
+        selected_username = request.form['username']
+
+        conn = get_db_connection()
+        tarot_entries = conn.execute('SELECT * FROM tarot WHERE user_id IN (SELECT id FROM users WHERE username IN (?, ?))', 
+                                      (session['username'], selected_username)).fetchall()
+        conn.close()
+
+        results = []
+
+        if len(tarot_entries) >= 2:
+            day1, month1, year1 = tarot_entries[0]['bday'], tarot_entries[0]['bmonth'], tarot_entries[0]['byear']
+            day2, month2, year2 = tarot_entries[1]['bday'], tarot_entries[1]['bmonth'], tarot_entries[1]['byear']
+
+            value1 = calculate_date_value(day1, month1, year1)
+            value2 = calculate_date_value(day2, month2, year2)
+
+            total_sum = value1 + value2
+
+            while total_sum > 22:
+                total_sum -= 22
+
+            final_value1 = (total_sum + value1) % 22 or 22
+            final_value2 = (total_sum + value2) % 22 or 22
+
+            # Получаем названия и описания карт из базы данных
+            tarot_conn = get_tarot_db_connection()
+            card1 = tarot_conn.execute('SELECT name, description FROM tarot_cards_new WHERE id = ?', (final_value1,)).fetchone()
+            card2 = tarot_conn.execute('SELECT name, description FROM tarot_cards_new WHERE id = ?', (final_value2,)).fetchone()
+            total_card = tarot_conn.execute('SELECT name, description FROM tarot_cards_new WHERE id = ?', (total_sum,)).fetchone()
+            tarot_conn.close()
+
+            results = {
+                'value1': value1,
+                'value2': value2,
+                'total_sum': total_sum,
+                'card_name1': card1['name'] if card1 else 'Неизвестная карта',
+                'card_description1': card1['description'] if card1 else 'Нет описания',
+                'card_name2': card2['name'] if card2 else 'Неизвестная карта',
+                'card_description2': card2['description'] if card2 else 'Нет описания',
+                'total_card_name': total_card['name'] if total_card else 'Неизвестная карта',
+                'total_card_description': total_card['description'] if total_card else 'Нет описания',
+            }
+
+        return render_template('taro_sov.html', results=results, selected_username=selected_username)
+
+    else:
+        flash("Пожалуйста, войдите для выполнения этого действия.", "error")
+        return redirect(url_for('index'))
+
 @app.route('/cosmos', methods=['POST'])
 def cosmos():
     if 'username' in session:
