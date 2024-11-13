@@ -64,23 +64,40 @@
 
     <!-- Основное тело с описанием инструмента и кнопкой для запуска оценки -->
     <main>
-        <section class="description">
-            <h2>Оценка совместимости для эффективной работы</h2>
-            <p>Наш инновационный инструмент помогает оценить совместимость между коллегами, руководителями и подчиненными, а также определить, насколько кандидат подходит компании. Улучшите производительность и сократите текучку с помощью Re Hub!</p>
-        
-            <div class="evaluation-section">
-                <h2>Расклад картами Таро</h2>
-                <form action="{{ url_for('tarot') }}" method="post">
-                    <button type="submit" class="button-start">Начать</button>
-                </form>
-            </div>
-        
-            <div class="evaluation-section">
-                <h2>Рассчёт космограммы</h2>
-                <form action="{{ url_for('cosmos') }}" method="post">
-                    <button type="submit" class="button-start">Начать</button>
-                </form>
-            </div>
+        <section>
+            <h2>Расклад картами Таро</h2>
+            <form id="tarotForm" action="/tarot_result" method="post">
+                <label for="birth-day">День рождения:</label>
+                <select id="birth-day" name="birth_day" required>
+                    {% for day in range(1, 32) %}
+                        <option value="{{ day }}">{{ day }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="birth-month">Месяц рождения:</label>
+                <select id="birth-month" name="birth_month" required>
+                    {% for month in range(1, 13) %}
+                        <option value="{{ month }}">{{ month }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="birth-year">Год рождения:</label>
+                <select id="birth-year" name="birth_year" required>
+                    {% for year in range(1900, 2024) %}
+                        <option value="{{ year }}">{{ year }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="position">Должность:</label>
+                <select id="position" name="position" required>
+                    <option value="junior">Junior</option>
+                    <option value="middle">Middle</option>
+                    <option value="senior">Senior</option>
+                    <option value="teamlead">Team Lead</option>
+                </select>
+
+                <button type="submit" class="button-tarot">МАГИЯ</button>
+            </form>
         </section>
     </main>
 

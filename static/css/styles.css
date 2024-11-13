@@ -461,3 +461,60 @@ footer .social-links a:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
+
+/* Стили для формы расклада Таро */
+#tarotForm {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    max-width: 400px;
+    margin: 2rem auto;
+    text-align: left;
+}
+
+#tarotForm h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #FFD700;
+}
+
+#tarotForm label {
+    font-size: 1rem;
+    display: block;
+    margin: 1rem 0 0.5rem;
+}
+
+#tarotForm select {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+/* Кнопка для отправки формы */
+.button-tarot {
+    background: linear-gradient(135deg, #8A2BE2, #9A4DFF);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    display: block;
+    margin: 0 auto;
+}
+
+.button-tarot:hover {
+    background: linear-gradient(135deg, #9A4DFF, #8A2BE2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}

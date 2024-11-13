@@ -38,8 +38,17 @@
     <footer>
         <p>&copy; 2024 Re Hub. Все права защищены.</p>
         <div class="social-links">
-        <a href="#">Telegram</a>
+        <a href="https://t.me/Doma_superbl">Telegram</a>
         </div>
     </footer>
 </body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for category, message in messages %}
+        <li class="flash-message {{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 </html>

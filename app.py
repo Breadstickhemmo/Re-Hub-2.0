@@ -131,7 +131,22 @@ def change_password():
     else:
         flash("Пожалуйста, войдите для выполнения этого действия.", "error")
         return redirect(url_for('login'))
+    
+@app.route('/tarot', methods=['POST'])
+def tarot():
+    if 'username' in session:
+        return render_template('tarot.html')
+    else:
+        flash("Пожалуйста, войдите, чтобы получить доступ к раскладу.", "error")
+        return redirect(url_for('login'))
 
+@app.route('/cosmos', methods=['POST'])
+def cosmos():
+    if 'username' in session:
+        return render_template('cosmos.html')
+    else:
+        flash("Пожалуйста, войдите, чтобы получить доступ к рассчёту.", "error")
+        return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
