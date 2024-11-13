@@ -23,6 +23,17 @@ def init_db():
                 password TEXT NOT NULL
             )
         ''')
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS tarot (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                bday INTEGER,
+                bmonth INTEGER,
+                byear INTEGER,
+                jobpos TEXT,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+        ''')
     conn.close()
 
 # Инициализируем базу данных при первом запуске
@@ -138,6 +149,44 @@ def tarot():
         return render_template('tarot.html')
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к раскладу.", "error")
+        return redirect(url_for('index'))
+
+@app.route('/tarot_result', methods=['POST'])
+def tarot_result():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        bday = request.form['birth_day']
+        bmonth = request.form['birth_month']
+        byear = request.form['birth_year']
+        jobpos = request.form['position']
+
+        conn = get_db_connection()
+        try:
+            with conn:
+                existing_entry = conn.execute(
+                    'SELECT * FROM tarot WHERE user_id = ?',
+                    (user_id,)
+                ).fetchone()
+                if existing_entry:
+                    conn.execute(
+                        'UPDATE tarot SET bday = ?, bmonth = ?, byear = ?, jobpos = ? WHERE user_id = ?',
+                        (bday, bmonth, byear, jobpos, user_id)
+                    )
+                    flash('Данные успешно обновлены!', 'success')
+                else:
+                    conn.execute(
+                        'INSERT INTO tarot (user_id, bday, bmonth, byear, jobpos) VALUES (?, ?, ?, ?, ?)',
+                        (user_id, bday, bmonth, byear, jobpos)
+                    )
+                    flash('Данные успешно сохранены!', 'success')
+            return render_template('tarot_result.html', user_id=user_id, bday=bday, bmonth=bmonth, byear=byear, jobpos=jobpos)
+        except Exception as e:
+            flash('Произошла ошибка при сохранении данных.', 'error')
+            return redirect(url_for('index'))
+        finally:
+            conn.close()
+    else:
+        flash("Пожалуйста, войдите, чтобы сохранить данные.", "error")
         return redirect(url_for('index'))
 
 @app.route('/cosmos', methods=['POST'])
