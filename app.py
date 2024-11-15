@@ -50,6 +50,10 @@ if not os.path.exists('users.db'):
 def index():
     return render_template('index.html')
 
+# Минимальная и максимальная длина пароля
+MIN_PASSWORD_LENGTH = 8
+MAX_PASSWORD_LENGTH = 128
+
 # Регистрация
 @app.route('/register', methods=['POST'])
 def register():
@@ -57,10 +61,12 @@ def register():
     email = request.form['email']
     password = request.form['password']
 
-    # Хэшируем пароль
+    if len(password) < MIN_PASSWORD_LENGTH or len(password) > MAX_PASSWORD_LENGTH:
+        flash(f'Пароль должен содержать от {MIN_PASSWORD_LENGTH} до {MAX_PASSWORD_LENGTH} символов.', 'error')
+        return redirect(url_for('index'))
+
     hashed_password = generate_password_hash(password, method='pbkdf2:sha256:600000')
 
-    # Подключаемся к базе данных и добавляем пользователя
     conn = get_db_connection()
     try:
         with conn:
@@ -111,7 +117,10 @@ def logout():
 @app.route('/profile')
 def profile():
     if 'username' in session:
-        return render_template('profile.html')
+        conn = get_db_connection()
+        user = conn.execute('SELECT email FROM users WHERE username = ?', (session['username'],)).fetchone()
+        conn.close()
+        return render_template('profile.html', email=user['email'])  # Передаем email в шаблон
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к профилю.", "error")
         return redirect(url_for('index'))
@@ -147,7 +156,17 @@ def change_password():
     else:
         flash("Пожалуйста, войдите для выполнения этого действия.", "error")
         return redirect(url_for('index'))
-    
+
+@app.route('/confirm_email', methods=['POST'])
+def confirm_email():
+    if 'username' in session:
+        email = request.form['email']
+        flash('Письмо с подтверждением отправлено на ваш email.', 'success')
+        return redirect(url_for('profile'))
+    else:
+        flash("Пожалуйста, войдите, чтобы подтвердить почту.", "error")
+        return redirect(url_for('index'))
+
 @app.route('/tarot', methods=['POST'])
 def tarot():
     if 'username' in session:

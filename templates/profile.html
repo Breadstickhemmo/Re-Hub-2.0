@@ -11,29 +11,43 @@
     <header>
         <a href="{{ url_for('index') }}" class="site-title"><h1>Re Hub</h1></a>
     </header>
-
     <main>
-        <section class="profile">
-            <h2>Профиль пользователя: {{ session['username'] }}</h2>
-            
-            <h3>Изменить пароль</h3>
-            <form action="{{ url_for('change_password') }}" method="post">
-                <label for="current_password">Текущий пароль</label>
-                <input type="password" id="current_password" name="current_password" required>
+      <section class="profile">
+        <h2>{{ session['username'] }}</h2>
+      </section>
+      <section class="change_password">
+          <h3 onclick="togglePasswordChange()" style="cursor: pointer;">Изменить пароль</h3>
+          <div id="changePasswordSection" style="display: none;">
+              <form action="{{ url_for('change_password') }}" method="post">
+                  <label for="current_password">Текущий пароль</label>
+                  <input type="password" id="current_password" name="current_password" required>
 
-                <label for="new_password">Новый пароль</label>
-                <input type="password" id="new_password" name="new_password" required>
+                  <label for="new_password">Новый пароль</label>
+                  <input type="password" id="new_password" name="new_password" required>
 
-                <label for="confirm_password">Подтвердите новый пароль</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
+                  <label for="confirm_password">Подтвердите новый пароль</label>
+                  <input type="password" id="confirm_password" name="confirm_password" required>
 
-                <button type="submit" class="button-update">Обновить пароль</button>
+                  <button type="submit" class="button-update">Обновить пароль</button>
+              </form>
+          </div>
+      </section>
+      <section class="email_confirmation">
+        <h3 onclick="toggleEmailConfirmation()" style="cursor: pointer;">Подтверждение почты</h3>
+        <div id="emailConfirmationSection" style="display: none;">
+            <form action="{{ url_for('confirm_email') }}" method="post">
+                <label for="email">Ваш email</label>
+                <input type="email" id="email" name="email" value="{{ email }}" required>  <!-- Используем переданное значение email -->
+    
+                <button type="submit" class="button-confirm">Подтвердить почту</button>
             </form>
-
-            <form action="{{ url_for('logout') }}" method="post">
-                <button type="submit" class="button-logout">Выйти из аккаунта</button>
-            </form>
-        </section>
+        </div>
+    </section>
+      <section class="logout_profile">
+        <form action="{{ url_for('logout') }}" method="post">
+          <button type="submit" class="button-logout">Выйти из аккаунта</button>
+        </form>
+      </section>
     </main>
     <!-- Footer с информацией о компании и ссылками на соцсети -->
     <footer>
@@ -42,6 +56,7 @@
         <a href="https://t.me/Doma_superbl">Telegram</a>
         </div>
     </footer>
+    <script src="../static/js/script.js"></script>
 </body>
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}

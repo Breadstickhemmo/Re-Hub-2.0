@@ -47,9 +47,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Функция для начала оценки
-function startTaro() {
-    alert("Запуск оценки совместимости. Ожидайте дальнейшей разработки.");
+function togglePasswordChange() {
+    const passwordChangeSection = document.getElementById('changePasswordSection');
+    if (passwordChangeSection.style.display === 'none' || passwordChangeSection.style.display === '') {
+      passwordChangeSection.style.display = 'block';
+    } else {
+      passwordChangeSection.style.display = 'none';
+    }
+  }
+
+function toggleEmailConfirmation() {
+    const emailConfirmationSection = document.getElementById('emailConfirmationSection');
+    if (emailConfirmationSection.style.display === 'none' || emailConfirmationSection.style.display === '' ) {
+        emailConfirmationSection.style.display = 'block';
+    } else {
+        emailConfirmationSection.style.display = 'none';
+    } 
 }
 
 // Функция для начала оценки
