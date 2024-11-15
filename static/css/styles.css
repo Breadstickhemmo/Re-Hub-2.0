@@ -1,70 +1,105 @@
-.main-content {
-    text-align: center;
-    padding: 50px 20px;
-    background-color: #0C6565;
-    flex: 1;
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
 }
 
-.main-content .content-box {
-    background-color: #fff;
-    border-radius: 90px;
-    padding: 60px;
-    display: inline-block;
-    max-width: 1200px;
-    width: 100%;
-    text-align: left;
-    position: relative;
+.container {
+    padding-top: 50px;
 }
 
-.main-content .content-box .text-content {
-    max-width: 900px;
-    margin: 0 auto;
+.texts {
+    padding-left: 10%;
+    padding-right: 30%;
 }
 
-.main-content .content-box h1 {
+.title {
     font-size: 56px;
     font-weight: 800;
-    color: #2C2C2C;
+    color: #1a1a1a;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: #ff4d4d;
+    text-decoration-thickness: 6px;
     line-height: 1;
+    margin-bottom: 30px;
 }
 
-.main-content .content-box p {
-    font-size: 22px;
-    color: #2C2C2C;
-    margin: 20px 0;
-    font-weight: 100;
-}
-
-.main-content .orange-box {
-    background-color: #FE982D;
-    border-radius: 90px;
-    padding: 30px;
-    color: #fff;
+.subtitle {
     font-size: 24px;
+    color: #666666;
+    margin-top: 20px;
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.options {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.option {
+    width: 50%;
+    padding: 60px 20px;
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+    transition: background-color 0.3s ease, transform 0.3s ease, width 0.3s ease; /* Плавный переход цвета */
+    overflow: hidden;
+}
+
+.option-title {
+    font-size: 28px;
     font-weight: 600;
-    max-width: 900px;
-    margin: 0 auto;
+    color: #ffffff;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.tarot-option {
+    background-color: #b3b3b3;
+}
+
+.tarot-option:hover {
+    background-color: #FE982D;
+    width: 100%;
+}
+
+.cosmos-option {
+    background-color: #808080;
+}
+
+.cosmos-option:hover {
+    background-color: #0C6565;
+    width: 100%;
+}
+
+/* Псевдоэлемент для слайда */
+.option::before {
+    content: '';
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -90px;
-    display: flex;
-    justify-content: space-around;
-    width: calc(100% - 120px);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    z-index: 0;
+    transition: transform 0.3s ease
 }
 
-.main-content .orange-box .button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.option:hover::before {
+    transform: translateY(100%);
 }
 
-.main-content .orange-box .button .start {
-    background-color: #fff;
-    color: #FE982D;
-    border-radius: 20px;
+.button {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 25px;
     padding: 15px 30px;
-    margin-top: 10px;
-    cursor: pointer;
     font-size: 20px;
+    cursor: pointer;
 }
