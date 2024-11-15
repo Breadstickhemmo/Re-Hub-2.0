@@ -117,13 +117,12 @@ def logout():
     flash('Вы вышли из системы.')
     return redirect(url_for('index'))
 
-@app.route('/profile')
+@app.route('/profile', methods=['POST'])
 def profile():
     if 'username' in session:
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM users WHERE username = ?', (session['username'],)).fetchone()
         conn.close()
-        
         return render_template('profile.html', user=user)
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к профилю.", "error")

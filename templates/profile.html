@@ -1,97 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Профиль</title>
-  <link rel="stylesheet" href="../static/css/styles.css">
-  <link rel="stylesheet" href="../static/css/profile.css">
-  <link rel="icon" href="../static/img/favicon.png" type="image/png">
-</head>
-<body>
-    <header>
-        <a href="{{ url_for('index') }}" class="site-title"><h1>Re Hub</h1></a>
-    </header>
-    <main>
-      <section class="profile">
-        <h2>{{ session['username'] }}</h2>
-      </section>
-      <section class="form-container">
-        <h3 onclick="toggleProfileEdit()" style="cursor: pointer;">Редактировать профиль</h3>
-        <div id="profileEditSection" style="display: none;">
-            <form action="/update_profile" method="post">
-                <label for="first_name">Имя:</label>
-                <input type="text" id="first_name" name="first_name" value="{{ user.first_name if user.first_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.first_name else '' }}" required>
-            
-                <label for="last_name">Фамилия:</label>
-                <input type="text" id="last_name" name="last_name" value="{{ user.last_name if user.last_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.last_name else '' }}" required>
-            
-                <label for="father_name">Отчество:</label>
-                <input type="text" id="father_name" name="father_name" value="{{ user.father_name if user.father_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.father_name else '' }}">
-            
-                <label for="phone">Телефон:</label>
-                <input type="text" id="phone" name="phone" value="{{ user.phone if user.phone else '' }}" placeholder="{{ 'Заполните это поле' if not user.phone else '' }}">
-            
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="{{ user.email if user.email else '' }}" placeholder="{{ 'Заполните это поле' if not user.email else '' }}" required>
-            
-                <button type="submit" class="button-update">Обновить профиль</button>
-            </form>
-        </div>
-    </section>
-    <section class="edit-professional-info">
-      <h3 onclick="toggleProfessionalEdit()" style="cursor: pointer;">Редактировать профессиональную информацию</h3>
-      <div id="professionalEditSection" style="display: none;">
-          <form action="/update_traits" method="post">
-              <label for="personal_traits">Личные качества:</label>
-              <textarea id="personal_traits" name="personal_traits" placeholder="Опишите свои личные качества">{{ user.personal_traits if user.personal_traits else '' }}</textarea>
-          
-              <label for="professional_traits">Профессиональные качества:</label>
-              <textarea id="professional_traits" name="professional_traits" placeholder="Опишите свои профессиональные качества">{{ user.professional_traits if user.professional_traits else '' }}</textarea>
-          
-              <button type="submit" class="button-update">Обновить информацию</button>
-          </form>
-      </div>
-    </section>  
-    <section class="change_password">
-        <h3 onclick="togglePasswordChange()" style="cursor: pointer;">Изменить пароль</h3>
-        <div id="changePasswordSection" style="display: none;">
-            <form action="{{ url_for('change_password') }}" method="post">
-                <label for="current_password">Текущий пароль</label>
-                <input type="password" id="current_password" name="current_password" required>
+{% extends 'base.html' %}
 
-                <label for="new_password">Новый пароль</label>
-                <input type="password" id="new_password" name="new_password" required>
+{% block title %}Главная{% endblock %}
 
-                <label for="confirm_password">Подтвердите новый пароль</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
+{% block css %}
+<link rel="stylesheet" href="../static/css/profile.css">
+{% endblock %}
 
-                <button type="submit" class="button-update">Обновить пароль</button>
-            </form>
-        </div>
-      </section>
-      <section class="logout_profile">
-        <form action="{{ url_for('logout') }}" method="post">
-          <button type="submit" class="button-logout">Выйти из аккаунта</button>
+{% block content %}
+<main>
+  <section class="profile">
+    <h2>{{ session['username'] }}</h2>
+  </section>
+  <section class="form-container">
+    <h3 onclick="toggleProfileEdit()" style="cursor: pointer;">Редактировать профиль</h3>
+    <div id="profileEditSection" style="display: none;">
+        <form action="/update_profile" method="post">
+            <label for="first_name">Имя:</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user.first_name if user.first_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.first_name else '' }}" required>
+        
+            <label for="last_name">Фамилия:</label>
+            <input type="text" id="last_name" name="last_name" value="{{ user.last_name if user.last_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.last_name else '' }}" required>
+        
+            <label for="father_name">Отчество:</label>
+            <input type="text" id="father_name" name="father_name" value="{{ user.father_name if user.father_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.father_name else '' }}">
+        
+            <label for="phone">Телефон:</label>
+            <input type="text" id="phone" name="phone" value="{{ user.phone if user.phone else '' }}" placeholder="{{ 'Заполните это поле' if not user.phone else '' }}">
+        
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ user.email if user.email else '' }}" placeholder="{{ 'Заполните это поле' if not user.email else '' }}" required>
+        
+            <button type="submit" class="button-update">Обновить профиль</button>
         </form>
-      </section>
-    </main>
-    <!-- Footer с информацией о компании и ссылками на соцсети -->
-    <footer>
-        <p>&copy; 2024 Re Hub. Все права защищены.</p>
-        <div class="social-links">
-        <a href="https://t.me/Doma_superbl">Telegram</a>
-        </div>
-    </footer>
-    <script src="../static/js/script.js"></script>
-</body>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class="flash-messages">
-      {% for category, message in messages %}
-        <li class="flash-message {{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-</html>
+    </div>
+</section>
+<section class="edit-professional-info">
+  <h3 onclick="toggleProfessionalEdit()" style="cursor: pointer;">Редактировать профессиональную информацию</h3>
+  <div id="professionalEditSection" style="display: none;">
+      <form action="/update_traits" method="post">
+          <label for="personal_traits">Личные качества:</label>
+          <textarea id="personal_traits" name="personal_traits" placeholder="Опишите свои личные качества">{{ user.personal_traits if user.personal_traits else '' }}</textarea>
+      
+          <label for="professional_traits">Профессиональные качества:</label>
+          <textarea id="professional_traits" name="professional_traits" placeholder="Опишите свои профессиональные качества">{{ user.professional_traits if user.professional_traits else '' }}</textarea>
+      
+          <button type="submit" class="button-update">Обновить информацию</button>
+      </form>
+  </div>
+</section>  
+<section class="change_password">
+    <h3 onclick="togglePasswordChange()" style="cursor: pointer;">Изменить пароль</h3>
+    <div id="changePasswordSection" style="display: none;">
+        <form action="{{ url_for('change_password') }}" method="post">
+            <label for="current_password">Текущий пароль</label>
+            <input type="password" id="current_password" name="current_password" required>
+
+            <label for="new_password">Новый пароль</label>
+            <input type="password" id="new_password" name="new_password" required>
+
+            <label for="confirm_password">Подтвердите новый пароль</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+
+            <button type="submit" class="button-update">Обновить пароль</button>
+        </form>
+    </div>
+  </section>
+  <section class="logout_profile">
+    <form action="{{ url_for('logout') }}" method="post">
+      <button type="submit" class="button-logout">Выйти из аккаунта</button>
+    </form>
+  </section>
+</main>
+{% endblock %}

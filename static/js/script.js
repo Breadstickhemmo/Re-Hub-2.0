@@ -1,13 +1,13 @@
 // Показать форму регистрации
 function showRegister() {
-    document.getElementById('registration').style.display = 'block';
-    document.getElementById('registration-overlay').style.display = 'block';
+    document.getElementById('registration-overlay').style.display = 'flex'; // Показываем затемнение
+    document.getElementById('registration').style.display = 'block'; // Показываем форму
 }
 
 // Скрыть форму регистрации
 function hideRegistration() {
-    document.getElementById('registration').style.display = 'none';
-    document.getElementById('registration-overlay').style.display = 'none';
+    document.getElementById('registration-overlay').style.display = 'none'; // Скрываем затемнение
+    document.getElementById('registration').style.display = 'none'; // Скрываем форму
 }
 
 // Добавляем обработчик для кнопки регистрации
@@ -72,9 +72,4 @@ function toggleProfessionalEdit() {
     } else {
         section.style.display = 'none';
     }
-}
-
-// Функция для начала оценки
-function startKosmo() {
-    alert("Запуск оценки совместимости. Ожидайте дальнейшей разработки.");
 }
