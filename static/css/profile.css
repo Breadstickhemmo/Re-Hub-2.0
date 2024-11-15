@@ -1,0 +1,303 @@
+/* profile.css */
+
+/* Стили для профиля пользователя */
+.profile {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.change_password {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.logout_profile {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+    padding-bottom: 2rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.profile h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: #FFD700;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+.change_password h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #FFD700;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+/* Стили для формы изменения пароля */
+.change_password form label {
+    display: block;
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem;
+}
+
+.change_password form input[type="password"] {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+/* Кнопки для обновления пароля и выхода */
+.button-update, .button-logout {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.button-update {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.button-update:hover {
+    background: linear-gradient(135deg, #66BB6A, #4CAF50);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+.email_confirmation {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.email_confirmation h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #FFD700;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+.email_confirmation form label {
+    display: block;
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem;
+}
+
+.email_confirmation form input[type="email"] {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+/* Кнопка для подтверждения почты */
+.button-confirm {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    margin-top: 1rem;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.button-confirm:hover {
+    background: linear-gradient(135deg, #66BB6A, #4CAF50);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Стили для кнопки выхода */
+.button-logout {
+    background: rgba(255, 69, 58, 0.9);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.button-logout:hover {
+    background: rgba(255, 69, 58, 1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Общие стили для всех форм */
+.form-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    text-align: center;
+}
+
+/* Заголовок формы */
+.form-container h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #FFD700;
+}
+
+/* Стили для меток полей */
+.form-container label {
+    display: block;
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Стили для полей ввода */
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container select {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+/* Стили для кнопок */
+.form-container button {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.form-container .button-update {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.form-container .button-update:hover {
+    background: linear-gradient(135deg, #66BB6A, #4CAF50);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+.form-container .button-logout {
+    background: rgba(255, 69, 58, 0.9);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.form-container .button-logout:hover {
+    background: rgba(255, 69, 58, 1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+.edit-professional-info {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.edit-professional-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #FFD700;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+}
+
+.edit-professional-info label {
+    display: block;
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem;
+}
+
+.edit-professional-info textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    resize: none;
+}
+
+.edit-professional-info .button-update {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    width: 100%;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.edit-professional-info .button-update:hover {
+    background: linear-gradient(135deg, #66BB6A, #4CAF50);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}

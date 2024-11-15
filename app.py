@@ -23,8 +23,15 @@ def init_db():
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL UNIQUE,
-                email TEXT NOT NULL UNIQUE,
-                password TEXT NOT NULL
+                password TEXT NOT NULL,
+                email TEXT UNIQUE,
+                first_name TEXT,
+                last_name TEXT,
+                father_name TEXT,
+                phone TEXT,
+                company_info TEXT,
+                personal_traits TEXT, -- Личные качества
+                professional_traits TEXT -- Профессиональные качества
             )
         ''')
         conn.execute('''
@@ -51,14 +58,13 @@ def index():
     return render_template('index.html')
 
 # Минимальная и максимальная длина пароля
-MIN_PASSWORD_LENGTH = 8
+MIN_PASSWORD_LENGTH = 4
 MAX_PASSWORD_LENGTH = 128
 
 # Регистрация
 @app.route('/register', methods=['POST'])
 def register():
     username = request.form['username']
-    email = request.form['email']
     password = request.form['password']
 
     if len(password) < MIN_PASSWORD_LENGTH or len(password) > MAX_PASSWORD_LENGTH:
@@ -71,13 +77,13 @@ def register():
     try:
         with conn:
             conn.execute(
-                'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-                (username, email, hashed_password)
+                'INSERT INTO users (username, password) VALUES (?, ?)',
+                (username, hashed_password)
             )
         flash('Регистрация прошла успешно! Теперь вы можете войти.', 'success')
         return redirect(url_for('index'))
     except sqlite3.IntegrityError:
-        flash('Имя пользователя или email уже существуют.', 'error')
+        flash('Имя пользователя уже существует.', 'error')
         return redirect(url_for('index'))
     finally:
         conn.close()
@@ -88,7 +94,6 @@ def login():
     username = request.form['username']
     password = request.form['password']
 
-    # Подключаемся к базе данных и проверяем данные
     conn = get_db_connection()
     user = conn.execute(
         'SELECT * FROM users WHERE username = ?',
@@ -97,13 +102,11 @@ def login():
     conn.close()
 
     if user and check_password_hash(user['password'], password):
-        # Успешный вход — сохраняем данные в сессии
         session['user_id'] = user['id']
         session['username'] = user['username']
         flash('Вы успешно вошли!', 'success')
         return redirect(url_for('index'))
     else:
-        # Неправильные данные
         flash('Неверное имя пользователя или пароль.', 'error')
         return redirect(url_for('index'))
 
@@ -118,9 +121,10 @@ def logout():
 def profile():
     if 'username' in session:
         conn = get_db_connection()
-        user = conn.execute('SELECT email FROM users WHERE username = ?', (session['username'],)).fetchone()
+        user = conn.execute('SELECT * FROM users WHERE username = ?', (session['username'],)).fetchone()
         conn.close()
-        return render_template('profile.html', email=user['email'])  # Передаем email в шаблон
+        
+        return render_template('profile.html', user=user)
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к профилю.", "error")
         return redirect(url_for('index'))
@@ -165,6 +169,47 @@ def confirm_email():
         return redirect(url_for('profile'))
     else:
         flash("Пожалуйста, войдите, чтобы подтвердить почту.", "error")
+        return redirect(url_for('index'))
+
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    if 'username' in session:
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        father_name = request.form['father_name']
+        phone = request.form['phone']
+        email = request.form['email']
+
+        conn = get_db_connection()
+        conn.execute('UPDATE users SET last_name = ?, first_name = ?, father_name = ?, phone = ?, email = ? WHERE username = ?',
+                     (last_name, first_name, father_name, phone, email, session['username']))
+        conn.commit()
+        conn.close()
+
+        flash("Данные успешно обновлены.", "success")
+        return redirect(url_for('profile'))
+    else:
+        flash("Пожалуйста, войдите для выполнения этого действия.", "error")
+        return redirect(url_for('index'))
+
+@app.route('/update_traits', methods=['POST'])
+def update_traits():
+    if 'username' in session:
+        personal_traits = request.form.get('personal_traits')
+        professional_traits = request.form.get('professional_traits')
+
+        conn = get_db_connection()
+        conn.execute(
+            'UPDATE users SET personal_traits = ?, professional_traits = ? WHERE username = ?',
+            (personal_traits, professional_traits, session['username'])
+        )
+        conn.commit()
+        conn.close()
+
+        flash("Информация успешно обновлена.", "success")
+        return redirect(url_for('profile'))
+    else:
+        flash("Пожалуйста, войдите для выполнения этого действия.", "error")
         return redirect(url_for('index'))
 
 @app.route('/tarot', methods=['POST'])

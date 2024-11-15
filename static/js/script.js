@@ -56,13 +56,22 @@ function togglePasswordChange() {
     }
   }
 
-function toggleEmailConfirmation() {
-    const emailConfirmationSection = document.getElementById('emailConfirmationSection');
-    if (emailConfirmationSection.style.display === 'none' || emailConfirmationSection.style.display === '' ) {
-        emailConfirmationSection.style.display = 'block';
+function toggleProfileEdit() {
+    const profileEditSection = document.getElementById('profileEditSection');
+    if (profileEditSection.style.display === 'none' || profileEditSection.style.display === '') {
+        profileEditSection.style.display = 'block';
     } else {
-        emailConfirmationSection.style.display = 'none';
-    } 
+        profileEditSection.style.display = 'none';
+    }
+}
+
+function toggleProfessionalEdit() {
+    const section = document.getElementById("professionalEditSection");
+    if (section.style.display === 'none' || section.style.display === '') {
+        section.style.display = 'block';
+    } else {
+        section.style.display = 'none';
+    }
 }
 
 // Функция для начала оценки
