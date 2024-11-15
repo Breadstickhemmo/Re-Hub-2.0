@@ -12,7 +12,7 @@
 </head>
 <body>
     <header>
-        <div class="logo">Tarot&Talent</div>
+        <a href="{{ url_for('index') }}" class="logo">Tarot&Talent</a>
         <nav>
             {% if 'username' in session %}
                 <form action="{{ url_for('profile') }}" method="post" style="display: inline;">
