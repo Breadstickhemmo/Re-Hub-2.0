@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Таро{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="../static/css/tarot.css">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="tarot-result-container">
+        <h2 class="result-title">Результат расклада Таро</h2>
+        
+        {% if card_id %}
+            {% set card = get_card_by_id(card_id) %}
+            <div class="card-selection">
+                <p><strong class="card-name">{{ card.name }}</strong></p>
+                <p class="card-description">{{ card.description }}</p>
+            </div>
+        {% else %}
+            <p>Нет данных для отображения.</p>
+        {% endif %}
+
+        <h3>Выберите пользователя для расчета</h3>
+        <form action="{{ url_for('check_user') }}" method="post">
+            <label for="selected_user">Пользователь:</label>
+            <select id="selected_user" name="username" required>
+                <option value="">Выберите пользователя</option>
+                {% for user in users %}
+                    <option value="{{ user.username }}">{{ user.username }} ({{ user.jobpos }})</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="button-tarot">Рассчитать</button>
+        </form>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="../static/css/profile.css">
+{% endblock %}
+
+{% block content %}
+<main>
+  <section class="profile">
+    <h2>{{ session['username'] }}</h2>
+  </section>
+  <section class="form-container">
+    <h3 onclick="toggleProfileEdit()" style="cursor: pointer;">Редактировать профиль</h3>
+    <div id="profileEditSection" style="display: none;">
+        <form action="/update_profile" method="post">
+            <label for="first_name">Имя:</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user.first_name if user.first_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.first_name else '' }}" required>
+        
+            <label for="last_name">Фамилия:</label>
+            <input type="text" id="last_name" name="last_name" value="{{ user.last_name if user.last_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.last_name else '' }}" required>
+        
+            <label for="father_name">Отчество:</label>
+            <input type="text" id="father_name" name="father_name" value="{{ user.father_name if user.father_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.father_name else '' }}">
+        
+            <label for="birth_day">День рождения:</label>
+            <input type="number" id="birth_day" name="birth_day" value="{{ user.bday if user.bday else '' }}" min="1" max="31" required>
+
+            <label for="birth_month">Месяц рождения:</label>
+            <input type="number" id="birth_month" name="birth_month" value="{{ user.bmonth if user.bmonth else '' }}" min="1" max="12" required>
+
+            <label for="birth_year">Год рождения:</label>
+            <input type="number" id="birth_year" name="birth_year" value="{{ user.byear if user.byear else '' }}" min="1900" max="{{ current_year }}" required>
+            
+            <label for="phone">Телефон:</label>
+            <input type="text" id="phone" name="phone" value="{{ user.phone if user.phone else '' }}" placeholder="{{ 'Заполните это поле' if not user.phone else '' }}">
+        
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ user.email if user.email else '' }}" placeholder="{{ 'Заполните это поле' if not user.email else '' }}" required>
+
+            <button type="submit" class="button-update">Обновить профиль</button>
+        </form>
+    </div>
+</section>
+<section class="edit-professional-info">
+    <h3 onclick="toggleProfessionalEdit()" style="cursor: pointer;">Редактировать профессиональную информацию</h3>
+    <div id="professionalEditSection" style="display: none;">
+        <form action="/update_traits" method="post">
+            <label for="personal_traits">Личные качества:</label>
+            <textarea id="personal_traits" name="personal_traits" placeholder="Опишите свои личные качества">{{ user.personal_traits if user.personal_traits else '' }}</textarea>
+        
+            <label for="professional_traits">Профессиональные качества:</label>
+            <textarea id="professional_traits" name="professional_traits" placeholder="Опишите свои профессиональные качества">{{ user.professional_traits if user.professional_traits else '' }}</textarea>
+  
+            <label for="jobpos">Должность:</label>
+            <input type="text" id="jobpos" name="jobpos" value="{{ user.jobpos if user.jobpos else '' }}" placeholder="Введите вашу должность" required>
+        
+            <button type="submit" class="button-update">Обновить информацию</button>
+        </form>
+    </div>
+  </section>
+<section id="business-section">
+  <h2 onclick="toggleBusinessEdit()" style="cursor: pointer;">Мой бизнес</h2>
+  <div id="businessEditSection">
+    <div id="additionalBusinessOptions" style="display: none;">
+      <form id="businessForm" action="/manage_business" method="post">
+          <label for="business_name">Название бизнеса</label>
+          <input type="text" id="business_name" name="business_name" value="{{ session['business_name'] if session['business_name'] else '' }}" required>
+          <button type="submit" class="button-save">Сохранить бизнес</button>
+      </form>
+
+      {% if session['business_name'] %} <!-- Скрываем изначально -->
+          <form id="addPositionForm" action="/add_position" method="post">
+              <label for="position">Должность</label>
+              <input type="text" id="position" name="position" required>
+              <button type="submit" class="button-save">Добавить должность</button>
+          </form>
+
+          <form id="removePositionForm" action="/remove_position" method="post">
+              <label for="remove_position">Выберите должность для удаления</label>
+              <select id="remove_position" name="position" required>
+                  {% if user_business and user_business.job_positions %}
+                      {% for position in user_business.job_positions.split(',') %}
+                          <option value="{{ position }}">{{ position }}</option>
+                      {% endfor %}
+                  {% else %}
+                      <option value="">Нет должностей для отображения</option>
+                  {% endif %}
+              </select>
+              <button type="submit" class="button-save">Удалить должность</button>
+          </form>
+          <form id="addRecruiterForm" action="/add_recruiter" method="post">
+              <label for="recruiter_username">Логин рекрутера</label>
+              <input type="text" id="recruiter_username" name="recruiter_username" required>
+              <button type="submit" class="button-save">Добавить рекрутера</button>
+          </form>
+      </div>
+      {% endif %}
+  </div>
+</section>
+<section class="change_password">
+    <h3 onclick="togglePasswordChange()" style="cursor: pointer;">Изменить пароль</h3>
+    <div id="changePasswordSection" style="display: none;">
+        <form action="{{ url_for('change_password') }}" method="post">
+            <label for="current_password">Текущий пароль</label>
+            <input type="password" id="current_password" name="current_password" required>
+
+            <label for="new_password">Новый пароль</label>
+            <input type="password" id="new_password" name="new_password" required>
+
+            <label for="confirm_password">Подтвердите новый пароль</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+
+            <button type="submit" class="button-update">Обновить пароль</button>
+        </form>
+    </div>
+  </section>
+  <section class="logout_profile">
+    <form action="{{ url_for('logout') }}" method="post">
+      <button type="submit" class="button-logout">Выйти из аккаунта</button>
+    </form>
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,105 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+}
+
+.container {
+    padding-top: 50px;
+}
+
+.texts {
+    padding-left: 10%;
+    padding-right: 30%;
+}
+
+.title {
+    font-size: 56px;
+    font-weight: 800;
+    color: #1a1a1a;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: #ff4d4d;
+    text-decoration-thickness: 6px;
+    line-height: 1;
+    margin-bottom: 30px;
+}
+
+.subtitle {
+    font-size: 24px;
+    color: #666666;
+    margin-top: 20px;
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.options {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.option {
+    width: 50%;
+    padding: 60px 20px;
+    box-sizing: border-box;
+    text-align: center;
+    position: relative;
+    transition: background-color 0.3s ease, transform 0.3s ease, width 0.3s ease;
+    overflow: hidden;
+}
+
+.option-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.tarot-option {
+    background-color: #0C6565;
+}
+
+.tarot-option:hover {
+    background-color: #FE982D;
+    width: 100%;
+}
+
+.cosmos-option {
+    background-color: #0C6565;
+}
+
+.cosmos-option:hover {
+    background-color: #FE982D;
+    width: 100%;
+}
+
+/* Псевдоэлемент для слайда */
+.option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    z-index: 0;
+    transition: transform 0.3s ease
+}
+
+.option:hover::before {
+    transform: translateY(100%);
+}
+
+.button {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 25px;
+    padding: 15px 30px;
+    font-size: 20px;
+    cursor: pointer;
+}

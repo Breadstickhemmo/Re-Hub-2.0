@@ -1,0 +1,117 @@
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #0C6565;
+    color: #2C2C2C;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+}
+
+header .logo {
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #2C2C2C;
+}
+
+header .buttons {
+    display: flex;
+    gap: 10px;
+}
+
+header .buttons button {
+    padding: 10px 20px;
+    border: 2px solid #0C6565;
+    border-radius: 20px;
+    background-color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 400;
+}
+
+header .buttons button:hover {
+    background-color: #0C6565;
+    transform: translateY(-2px);
+    color: #fff;
+}
+
+header .buttons .login {
+    background-color: #0C6565;
+    color: #fff;
+}
+
+header .buttons .cabinet {
+    background-color: #FE982D;
+    color: #fff;
+    border: 2px solid #FE982D;
+}
+
+header .buttons .cabinet:hover {
+    border: 2px solid #0C6565;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    color: #2C2C2C;
+    margin-top: 5%;
+}
+
+footer a {
+    color: #2C2C2C;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.spacer {
+    height: 30px;
+}
+
+.flash-messages {
+    list-style-type: none;
+    padding: 0;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 400px;
+    z-index: 1000;
+}
+
+.flash-messages li {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+    text-align: center;
+}
+
+.flash-messages li.success {
+    color: #b2ff59;
+}
+
+.flash-messages li.error {
+    color: #ff8a80;
+}
+
+.fade-out {
+    opacity: 0;
+}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="../static/css/styles.css">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container">
+        <div class="texts">
+            <div class="title">Оценка совместимости для эффективной работы</div>
+            <div class="subtitle">Наш инновационный инструмент помогает оценить совместимость между коллегами, руководителями и подчиненными, а также определить, насколько кандидат подходит компании</div>
+        </div>
+        <div class="options">
+            <div class="option tarot-option">
+                <div class="option-title">Расклад картами Таро</div>
+                <form action="{{ url_for('tarot_result') }}" method="post">
+                    <input type="hidden" name="birth_day" value="{{ user.bday if user else '' }}">
+                    <input type="hidden" name="birth_month" value="{{ user.bmonth if user else '' }}">
+                    <input type="hidden" name="birth_year" value="{{ user.byear if user else '' }}">
+                    <button type="submit" class="button">Начать</button>
+                </form>
+            </div>
+            <div class="option cosmos-option">
+                <div class="option-title">Расчет космограммы</div>
+                <button class="button">Начать</button>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

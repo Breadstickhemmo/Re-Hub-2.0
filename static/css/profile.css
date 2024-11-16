@@ -1,0 +1,150 @@
+/* profile.css */
+
+body {
+    background-color: #ffffff; /* Цвет фона страницы */
+    color: #2C2C2C; /* Цвет текста */
+    font-family: Arial, sans-serif; /* Шрифт */
+}
+
+.profile {
+    text-align: center;
+    padding: 20px 20px;
+    background-color: #fff; /* Белый фон для профиля */
+    border-radius: 0; /* Убираем скругление */
+    max-width: 800px; /* Максимальная ширина */
+    margin: 20px auto; /* Центрирование */
+}
+
+.profile h2 {
+    font-size: 36px; /* Размер заголовка */
+    font-weight: 800; /* Жирный шрифт */
+    color: #2C2C2C; /* Цвет заголовка */
+}
+
+.form-container, .edit-professional-info, .change_password, .logout_profile {
+    margin: 0; /* Убираем отступы между секциями */
+    background-color: #0C6565; /* Цвет фона для первой секции */
+    border: none; /* Без границ */
+    padding: 20px; /* Отступы внутри форм */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Тень для форм */
+    border-radius: 0; /* Убираем скругление */
+    text-align: center; /* Центрируем текст */
+}
+
+h3 {
+    cursor: pointer; /* Указатель на курсор */
+    font-size: 24px; /* Размер заголовка секции */
+    color: #fff; /* Цвет заголовка секции */
+    margin-bottom: 10px; /* Отступ снизу */
+}
+
+label {
+    display: block; /* Блочный элемент для меток */
+    margin: 10px 0 5px; /* Отступы для меток */
+    font-weight: bold; /* Жирный шрифт для меток */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea {
+    width: calc(100% - 20px); /* Полная ширина с учетом отступов */
+    padding: 10px; /* Отступы внутри полей ввода */
+    border: 1px solid #ccc; /* Граница */
+    border-radius: 5px; /* Закругленные углы */
+    font-size: 16px; /* Размер шрифта */
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus {
+    border-color: #0C6565; /* Цвет границы при фокусе */
+    outline: none; /* Убираем обводку */
+}
+
+.button-update, .button-logout {
+    background-color: #FE982D; /* Цвет кнопки */
+    color: #fff; /* Цвет текста кнопки */
+    border: none; /* Без границ */
+    border-radius: 5px; /* Закругленные углы */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    font-size: 18px; /* Размер шрифта кнопки */
+    cursor: pointer; /* Указатель на курсор */
+    margin-top: 10px; /* Отступ сверху */
+}
+
+.button-update:hover, .button-logout:hover {
+    background-color: #e68a1c; /* Цвет кнопки при наведении */
+}
+
+#business-section {
+    margin: 0; /* Убираем отступы между секциями */
+    background-color: #0C6565; /* Белый фон для секции */
+    border-radius: 0; /* Убираем скругление */
+    padding: 20px; /* Отступы внутри секции */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Тень для секции */
+    text-align: center; /* Центрируем текст */
+}
+
+#business-section h2 {
+    font-size: 28px; /* Размер заголовка */
+    color: #2C2C2C; /* Цвет заголовка */
+    cursor: pointer; /* Указатель на курсор */
+    margin-bottom: 10px; /* Отступ снизу */
+}
+
+#business-section form {
+    margin-bottom: 20px; /* Отступы между формами */
+}
+
+#business-section label {
+    display: block; /* Блочный элемент для меток */
+    margin: 10px 0 5px; /* Отступы для меток */
+    font-weight: bold; /* Жирный шрифт для меток */
+}
+
+#business-section input[type="text"],
+#business-section input[type="password"],
+#business-section select {
+    width: calc(100% - 20px); /* Полная ширина с учетом отступов */
+    padding: 10px; /* Отступы внутри полей ввода */
+    border: 1px solid #ccc; /* Граница */
+    border-radius: 5px; /* Закругленные углы */
+    font-size: 16px; /* Размер шрифта */
+    margin-bottom: 10px; /* Отступ снизу */
+}
+
+.button-save {
+    background-color: #FE982D; /* Цвет кнопки */
+    color: white; /* Цвет текста кнопки */
+    border: none; /* Без границ */
+    border-radius: 5px; /* Закругленные углы */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    font-size: 18px; /* Размер шрифта кнопки */
+    cursor: pointer; /* Указатель на курсор */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+}
+
+.button-save:hover {
+    background-color: #e68a1c; /* Цвет кнопки при наведении */
+}
+
+h3 {
+    font-size: 24px; /* Размер заголовка секции */
+    color: #2C2C2C; /* Цвет заголовка секции */
+    margin-bottom: 10px; /* Отступ снизу */
+}
+
+/* Для каждой секции можно добавить дополнительные стили для чередования цветов */
+.edit-professional-info {
+    background-color: #fff;  /* Цвет фона для секции */
+}
+
+.change_password {
+    background-color: #fff; /* Белый фон для секции */
+}
+
+.logout_profile {
+    background-color: #0C6565; /* Цвет фона для секции */
+}

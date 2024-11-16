@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}T&T{% endblock %}</title>
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/registration.css">
+    <link rel="stylesheet" href="../static/css/login.css">
+    {% block css %}{% endblock %}
+    <link rel="icon" href="../static/img/favicon.png" type="image/png">
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('index') }}" class="logo">Tarot&Talent</a>
+        <nav>
+            {% if 'username' in session %}
+                <form action="{{ url_for('profile') }}" method="post" style="display: inline;">
+                    <div class="buttons">
+                        <button type="submit" class="cabinet">Кабинет</button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="buttons">
+                    <button class="register" onclick="showRegister()">Регистрация</button>
+                    <button class="login" onclick="showLogin()">Вход</button>
+                </div>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div id="registration-overlay" style="display: none;" onclick="hideRegistration()"></div>
+    <section id="registration" style="display: none;">
+        <h2>Регистрация</h2>
+        <form id="registrationForm" action="/register" method="post">
+            <input type="text" id="username" placeholder="Логин" name="username" required>
+            <input type="password" id="password" placeholder="Пароль" name="password" required>
+            <button type="submit" class="button-register">Зарегистрироваться</button>
+        </form>
+    </section>
+
+    <div id="login-overlay" style="display: none;" onclick="hideLogin()"></div>
+    <section id="login" style="display: none;">
+        <h2>Вход</h2>
+        <form id="loginForm" action="/login" method="post">
+            <input type="text" id="login-username" placeholder="Логин" name="username" required>
+            <input type="password" id="login-password" placeholder="Пароль" name="password" required>
+            <button type="submit" class="button-login ">Войти</button>
+        </form>        
+    </section>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        2024 Tarot&Talent. Все права защищены.<br>
+    </footer>
+
+    <script src="../static/js/script.js"></script>
+</body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for category, message in messages %}
+        <li class="flash-message {{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+</html>

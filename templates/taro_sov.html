@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Таро{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="../static/css/tarot.css">
+{% endblock %}
+
+{% block content %}
+    <main>
+        <section class="compatibility">
+            <h2 class="compatibility-title">Совместимость между {{ session['username'] }} и {{ selected_username }}</h2>
+            {% if results %}
+                <div class="card-selection">
+                    <p class="card-label"><strong>Ваша карта</strong></p>
+                    <p class="card-name">{{ results.card_name1 }}</p>
+                    <p class="card-description">{{ results.card_description1 }}</p>
+                </div>
+                <div class="card-selection">
+                    <p class="card-label"><strong>Карта выбранного пользователя</strong></p>
+                    <p class="card-name">{{ results.card_name2 }}</p>
+                    <p class="card-description">{{ results.card_description2 }}</p>
+                </div>
+                <div class="card-selection">
+                    <p class="card-label"><strong>Общая карта</strong></p>
+                    <p class="card-name">{{ results.total_card_name }}</p>
+                    <p class="card-description">{{ results.total_card_description }}</p>
+                </div>
+            {% else %}
+                <p>Недостаточно данных для расчета совместимости.</p>
+            {% endif %}
+        </section>
+    </main>
+{% endblock %}
