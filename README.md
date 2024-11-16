@@ -21,8 +21,8 @@
 ### Шаги установки
 1. Клонируйте репозиторий:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/Breadstickhemmo/Re-Hub-2.0.git
+   cd Re-Hub-2.0
 2. Установите зависимости:
    pip install -r requirements.txt
 3. Инициализируйте базу данных (если это не сделано автоматически):
