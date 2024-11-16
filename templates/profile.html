@@ -32,7 +32,16 @@
 
             <label for="birth_year">Год рождения:</label>
             <input type="number" id="birth_year" name="birth_year" value="{{ user.byear if user.byear else '' }}" min="1900" max="{{ current_year }}" required>
-            
+
+            <label for="birth_hour">Час рождения:</label>
+            <input type="number" id="birth_hour" name="birth_hour" value="{{ user.bhour if user.bhour else '' }}" min="0" max="23" required>
+
+            <label for="birth_minute">Минуты рождения:</label>
+            <input type="number" id="birth_minute" name="birth_minute" value="{{ user.bminute if user.bminute else '' }}" min="0" max="59" required>
+
+            <label for="birth_second">Секунды рождения:</label>
+            <input type="number" id="birth_second" name="birth_second" value="{{ user.bsecond if user.bsecond else '' }}" min="0" max="59" required>
+                        
             <label for="phone">Телефон:</label>
             <input type="text" id="phone" name="phone" value="{{ user.phone if user.phone else '' }}" placeholder="{{ 'Заполните это поле' if not user.phone else '' }}">
         

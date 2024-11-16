@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+import ephem
+from geopy.geocoders import Nominatim
 import sqlite3
 import os
+
+geolocator = Nominatim(user_agent="geoapiExercises")
 
 app = Flask(__name__)
 app.secret_key = 'qwertyuiop'
@@ -31,6 +35,9 @@ def init_db():
                 bday INTEGER,
                 bmonth INTEGER,
                 byear INTEGER,
+                bhour INTEGER, 
+                bminute INTEGER, 
+                bsecond INTEGER,
                 phone TEXT,
                 company_info TEXT,
                 jobpos TEXT,
@@ -205,12 +212,15 @@ def update_profile():
         birth_day = request.form['birth_day']
         birth_month = request.form['birth_month']
         birth_year = request.form['birth_year']
+        birth_hour = request.form['birth_hour']
+        birth_minute = request.form['birth_minute']
+        birth_second = request.form['birth_second']
         phone = request.form['phone']
         email = request.form['email']
 
         conn = get_db_connection()
-        conn.execute('UPDATE users SET last_name = ?, first_name = ?, father_name = ?, phone = ?, email = ?, bday = ?, bmonth = ?, byear = ? WHERE username = ?',
-                     (last_name, first_name, father_name, phone, email, birth_day, birth_month, birth_year, session['username']))
+        conn.execute('UPDATE users SET last_name = ?, first_name = ?, father_name = ?, phone = ?, email = ?, bday = ?, bmonth = ?, byear = ?, bhour = ?, bminute = ?, bsecond = ? WHERE username = ?',
+                     (last_name, first_name, father_name, phone, email, birth_day, birth_month, birth_year, birth_hour, birth_minute, birth_second, session['username']))
         conn.commit()
         conn.close()
 
@@ -521,11 +531,111 @@ def check_user():
 
 @app.route('/cosmos', methods=['POST'])
 def cosmos():
-    if 'username' in session:
-        return render_template('cosmos.html')
+    if 'user_id' in session:
+        user_id = session['user_id']
+        user_data = get_user_data(user_id)
+
+        # Форматируем дату рождения
+        birth_date_str = f"{user_data['byear']}-{user_data['bmonth']:02d}-{user_data['bday']:02d} {user_data['bhour']:02d}:{user_data['bminute']:02d}:{user_data['bsecond']:02d}"
+
+        # Получаем координаты города
+        city_name = user_data['city']
+        latitude, longitude = get_coordinates(city_name)
+
+        if latitude is not None and longitude is not None:
+            positions = calculate_planet_positions(birth_date_str, latitude, longitude)
+            return render_template('cosmos.html', positions=positions)
+
+        flash("Не удалось получить координаты для вашего города.", "error")
     else:
-        flash("Пожалуйста, войдите, чтобы получить доступ к рассчёту.", "error")
-        return redirect(url_for('index'))
+        flash("Пожалуйста, войдите, чтобы получить доступ к расчету.", "error")
+
+    return redirect(url_for('index'))
+
+def get_user_data(user_id): 
+    conn = get_db_connection() 
+    cursor = conn.cursor() 
+     
+    cursor.execute("SELECT bday, bmonth, byear, bhour, bminute, bsecond, city FROM users WHERE id = ?", (user_id,)) 
+    user_data = cursor.fetchone() 
+     
+    conn.close() 
+     
+    if user_data: 
+        return { 
+            'bday': user_data['bday'], 
+            'bmonth': user_data['bmonth'], 
+            'byear': user_data['byear'], 
+            'bhour': user_data['bhour'], 
+            'bminute': user_data['bminute'], 
+            'bsecond': user_data['bsecond'], 
+            'city': user_data['city'] 
+        } 
+    else: 
+       raise ValueError("Пользователь не найден.") 
+
+def get_coordinates(city_name): 
+    try: 
+        location = geolocator.geocode(city_name) 
+        if location: 
+            return location.latitude, location.longitude 
+        else: 
+            raise ValueError("Город не найден.") 
+    except Exception as e: 
+        print(f"Произошла ошибка: {e}") 
+        return None, None  
+
+def calculate_planet_positions(birth_date_str, latitude, longitude): 
+    observer = ephem.Observer() 
+    observer.date = birth_date_str 
+    observer.lat = str(latitude)   
+    observer.lon = str(longitude)  
+
+    planets_dicts = [ 
+        {'name': 'Sun', 'class': ephem.Sun}, 
+        {'name': 'Moon', 'class': ephem.Moon}, 
+        {'name': 'Mercury', 'class': ephem.Mercury}, 
+        {'name': 'Venus', 'class': ephem.Venus}, 
+        {'name': 'Mars', 'class': ephem.Mars}, 
+        {'name': 'Jupiter', 'class': ephem.Jupiter}, 
+        {'name': 'Saturn', 'class': ephem.Saturn}, 
+        {'name': 'Uranus', 'class': ephem.Uranus}, 
+        {'name': 'Neptune', 'class': ephem.Neptune}, 
+        {'name': 'Pluto', 'class': ephem.Pluto} 
+    ] 
+
+    houses = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]   
+    planet_positions = {} 
+
+    for planet in planets_dicts: 
+        celestial_body = planet["class"]() 
+        celestial_body.compute(observer)
+        azimuth_degrees = celestial_body.az * (180 / ephem.pi)  
+        altitude_degrees = celestial_body.alt * (180 / ephem.pi) 
+        house_number = determine_house(azimuth_degrees, houses) 
+        zodiac_sign = determine_zodiac(azimuth_degrees) 
+        
+        planet_positions[planet["name"]] = { 
+            "Position (Alt/Az)": (altitude_degrees, azimuth_degrees), 
+            "House": house_number, 
+            "Zodiac Sign": zodiac_sign 
+        } 
+
+    return planet_positions 
+
+def determine_house(longitude, houses): 
+    for i in range(len(houses)): 
+        if houses[i] <= longitude < (houses[i] + 30):  
+            return i + 1 
+    return None 
+
+def determine_zodiac(longitude): 
+    zodiac_signs = [ 
+        "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", 
+        "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces" 
+    ] 
+    index = int(longitude // 30) % 12 
+    return zodiac_signs[index]
 
 if __name__ == '__main__':
     app.run(debug=True)
