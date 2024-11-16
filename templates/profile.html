@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Главная{% endblock %}
+{% block title %}Профиль{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="../static/css/profile.css">
@@ -24,12 +24,21 @@
             <label for="father_name">Отчество:</label>
             <input type="text" id="father_name" name="father_name" value="{{ user.father_name if user.father_name else '' }}" placeholder="{{ 'Заполните это поле' if not user.father_name else '' }}">
         
+            <label for="birth_day">День рождения:</label>
+            <input type="number" id="birth_day" name="birth_day" value="{{ user.bday if user.bday else '' }}" min="1" max="31" required>
+
+            <label for="birth_month">Месяц рождения:</label>
+            <input type="number" id="birth_month" name="birth_month" value="{{ user.bmonth if user.bmonth else '' }}" min="1" max="12" required>
+
+            <label for="birth_year">Год рождения:</label>
+            <input type="number" id="birth_year" name="birth_year" value="{{ user.byear if user.byear else '' }}" min="1900" max="{{ current_year }}" required>
+            
             <label for="phone">Телефон:</label>
             <input type="text" id="phone" name="phone" value="{{ user.phone if user.phone else '' }}" placeholder="{{ 'Заполните это поле' if not user.phone else '' }}">
         
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="{{ user.email if user.email else '' }}" placeholder="{{ 'Заполните это поле' if not user.email else '' }}" required>
-        
+
             <button type="submit" class="button-update">Обновить профиль</button>
         </form>
     </div>
@@ -70,16 +79,16 @@
           <form id="removePositionForm" action="/remove_position" method="post">
               <label for="remove_position">Выберите должность для удаления</label>
               <select id="remove_position" name="position" required>
-                  <!-- Здесь будут динамически добавляться должности -->
-                  {% if user_business %}
+                  {% if user_business and user_business.job_positions %}
                       {% for position in user_business.job_positions.split(',') %}
                           <option value="{{ position }}">{{ position }}</option>
                       {% endfor %}
+                  {% else %}
+                      <option value="">Нет должностей для отображения</option>
                   {% endif %}
               </select>
               <button type="submit" class="button-save">Удалить должность</button>
           </form>
-
           <h3>Добавить рекрутера</h3>
           <form id="addRecruiterForm" action="/add_recruiter" method="post">
               <label for="recruiter_username">Логин рекрутера</label>

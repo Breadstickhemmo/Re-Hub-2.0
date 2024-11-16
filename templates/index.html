@@ -16,7 +16,12 @@
         <div class="options">
             <div class="option tarot-option">
                 <div class="option-title">Расклад картами Таро</div>
-                <button class="button">Начать</button>
+                <form action="{{ url_for('tarot_result') }}" method="post">
+                    <input type="hidden" name="birth_day" value="{{ user.bday if user else '' }}">
+                    <input type="hidden" name="birth_month" value="{{ user.bmonth if user else '' }}">
+                    <input type="hidden" name="birth_year" value="{{ user.byear if user else '' }}">
+                    <button type="submit" class="button">Начать</button>
+                </form>
             </div>
             <div class="option cosmos-option">
                 <div class="option-title">Расчет космограммы</div>

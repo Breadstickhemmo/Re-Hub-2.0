@@ -28,6 +28,9 @@ def init_db():
                 first_name TEXT,
                 last_name TEXT,
                 father_name TEXT,
+                bday INTEGER,
+                bmonth INTEGER,
+                byear INTEGER,
                 phone TEXT,
                 company_info TEXT,
                 jobpos TEXT,
@@ -49,9 +52,6 @@ def init_db():
             CREATE TABLE IF NOT EXISTS tarot (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER,
-                bday INTEGER,
-                bmonth INTEGER,
-                byear INTEGER,
                 card_id INTEGER,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
@@ -65,7 +65,12 @@ if not os.path.exists('users.db'):
 # Главная страница
 @app.route('/')
 def index():
-    return render_template('index.html')
+    user = None
+    if 'username' in session:
+        conn = get_db_connection()
+        user = conn.execute('SELECT * FROM users WHERE username = ?', (session['username'],)).fetchone()
+        conn.close()
+    return render_template('index.html', user=user)
 
 # Минимальная и максимальная длина пароля
 MIN_PASSWORD_LENGTH = 4
@@ -133,16 +138,18 @@ def profile():
     if 'username' in session:
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM users WHERE username = ?', (session['username'],)).fetchone()
-        business = conn.execute('SELECT business_name FROM businesses WHERE user_id = ?', (user['id'],)).fetchone()
+        business = conn.execute('SELECT business_name, job_positions FROM businesses WHERE user_id = ?', (user['id'],)).fetchone()
         conn.close()
         
-        # Сохраняем business_name в сессии, если он существует
+        # Сохраняем business_name и job_positions в сессии, если они существуют
         if business:
             session['business_name'] = business['business_name']
+            session['job_positions'] = business['job_positions']  # Сохраняем должности в сессии
         else:
             session['business_name'] = None
+            session['job_positions'] = None
             
-        return render_template('profile.html', user=user)
+        return render_template('profile.html', user=user, user_business=business)
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к профилю.", "error")
         return redirect(url_for('index'))
@@ -195,12 +202,15 @@ def update_profile():
         last_name = request.form['last_name']
         first_name = request.form['first_name']
         father_name = request.form['father_name']
+        birth_day = request.form['birth_day']
+        birth_month = request.form['birth_month']
+        birth_year = request.form['birth_year']
         phone = request.form['phone']
         email = request.form['email']
 
         conn = get_db_connection()
-        conn.execute('UPDATE users SET last_name = ?, first_name = ?, father_name = ?, phone = ?, email = ? WHERE username = ?',
-                     (last_name, first_name, father_name, phone, email, session['username']))
+        conn.execute('UPDATE users SET last_name = ?, first_name = ?, father_name = ?, phone = ?, email = ?, bday = ?, bmonth = ?, byear = ? WHERE username = ?',
+                     (last_name, first_name, father_name, phone, email, birth_day, birth_month, birth_year, session['username']))
         conn.commit()
         conn.close()
 
@@ -268,9 +278,22 @@ def add_position():
 
         conn = get_db_connection()
         try:
-            conn.execute('UPDATE businesses SET job_positions = job_positions || ? WHERE user_id = ?',
-                         (',' + position, user_id))
-            conn.commit()
+            # Получаем текущие должности для пользователя
+            existing_positions = conn.execute('SELECT job_positions FROM businesses WHERE user_id = ?', (user_id,)).fetchone()
+            if existing_positions:
+                # Обновляем должности, добавляя новую
+                new_positions = existing_positions['job_positions']
+                if new_positions:
+                    new_positions += ',' + position
+                else:
+                    new_positions = position
+                
+                conn.execute('UPDATE businesses SET job_positions = ? WHERE user_id = ?', (new_positions, user_id))
+            else:
+                # Если нет должностей, создаем новую запись
+                conn.execute('INSERT INTO businesses (user_id, job_positions) VALUES (?, ?)', (user_id, position))
+
+            conn.commit()  # Подтверждаем изменения
             flash("Должность успешно добавлена.", "success")
         except Exception as e:
             flash(f'Произошла ошибка: {e}', 'error')
@@ -290,11 +313,19 @@ def remove_position():
 
         conn = get_db_connection()
         try:
-            # Удаляем должность
-            conn.execute('UPDATE businesses SET job_positions = REPLACE(job_positions, ?, "") WHERE user_id = ?',
-                         (',' + position, user_id))
-            conn.commit()
-            flash("Должность успешно удалена.", "success")
+            # Получаем текущие должности для пользователя
+            existing_positions = conn.execute('SELECT job_positions FROM businesses WHERE user_id = ?', (user_id,)).fetchone()
+            if existing_positions:
+                # Удаляем должность
+                new_positions = existing_positions['job_positions'].split(',')
+                new_positions = [pos for pos in new_positions if pos != position]  # Удаляем выбранную должность
+                new_positions = ','.join(new_positions)  # Преобразуем обратно в строку
+
+                conn.execute('UPDATE businesses SET job_positions = ? WHERE user_id = ?', (new_positions, user_id))
+                conn.commit()
+                flash("Должность успешно удалена.", "success")
+            else:
+                flash("Должности не найдены.", "error")
         except Exception as e:
             flash(f'Произошла ошибка: {e}', 'error')
         finally:
@@ -331,29 +362,14 @@ def add_recruiter():
         flash("Пожалуйста, войдите для выполнения этого действия.", "error")
         return redirect(url_for('index'))
 
-@app.route('/tarot', methods=['POST'])
-def tarot():
-    if 'username' in session:
-        user_id = session['user_id']
-
-        conn = get_db_connection()
-        existing_entry = conn.execute(
-            'SELECT bday, bmonth, byear FROM tarot WHERE user_id = ?',
-            (user_id,)
-        ).fetchone()
-        conn.close()
-
-        if existing_entry:
-            return render_template('tarot.html', 
-                                   bday=existing_entry['bday'], 
-                                   bmonth=existing_entry['bmonth'], 
-                                   byear=existing_entry['byear'], 
-                                   jobpos=session['jobpos'])
-        else:
-            return render_template('tarot.html', jobpos=session['jobpos'])
-    else:
-        flash("Пожалуйста, войдите, чтобы получить доступ к раскладу.", "error")
-        return redirect(url_for('index'))
+def get_card_by_id(card_id):
+    conn = get_tarot_db_connection()
+    card = conn.execute(
+        'SELECT name, description FROM tarot_cards_new WHERE id = ?',
+        (card_id,)
+    ).fetchone()
+    conn.close()  # Закрываем соединение после запроса
+    return card  # Возвращаем найденную карту или None, если не найдена
 
 def calculate_date_value(day, month, year):
     digits_sum = sum(int(digit) for digit in f"{day}{month}{year}")
@@ -370,83 +386,47 @@ def tarot_result():
         bday = request.form['birth_day']
         bmonth = request.form['birth_month']
         byear = request.form['birth_year']
-        jobpos = session['jobpos']
-        jobpos_filter = request.form.get('jobpos_filter')
 
+        # Вычисление card_id на основе даты рождения
         card_id = calculate_date_value(bday, bmonth, byear)
 
         conn = get_db_connection()
         try:
-            with conn:
-                tarot_conn = get_tarot_db_connection()
-                card = tarot_conn.execute(
-                    'SELECT name, description FROM tarot_cards_new WHERE id = ?',
-                    (card_id,)
-                ).fetchone()
-                tarot_conn.close()
+            # Проверяем, существует ли уже запись для пользователя
+            existing_entry = conn.execute(
+                'SELECT * FROM tarot WHERE user_id = ?',
+                (user_id,)
+            ).fetchone()
 
-                if not card:
-                    flash('Карта не найдена.', 'error')
-                    return redirect(url_for('index'))
+            if existing_entry:
+                # Обновляем существующую запись
+                conn.execute(
+                    'UPDATE tarot SET card_id = ? WHERE user_id = ?',
+                    (card_id, user_id)
+                )
+                flash('Данные успешно обновлены!', 'success')
+            else:
+                # Вставляем новую запись
+                conn.execute(
+                    'INSERT INTO tarot (user_id, card_id) VALUES (?, ?)',
+                    (user_id, card_id)
+                )
+                flash('Данные успешно сохранены!', 'success')
 
-                existing_entry = conn.execute(
-                    'SELECT * FROM tarot WHERE user_id = ?',
-                    (user_id,)
-                ).fetchone()
+            conn.commit()  # Подтверждаем изменения
 
-                if existing_entry:
-                    conn.execute(
-                        'UPDATE tarot SET bday = ?, bmonth = ?, byear = ?, jobpos = ?, card_id = ? WHERE user_id = ?',
-                        (bday, bmonth, byear, jobpos, card_id, user_id)
-                    )
-                    flash('Данные успешно обновлены!', 'success')
-                else:
-                    conn.execute(
-                        'INSERT INTO tarot (user_id, bday, bmonth, byear, jobpos, card_id) VALUES (?, ?, ?, ?, ?, ?)',
-                        (user_id, bday, bmonth, byear, jobpos, card_id)
-                    )
-                    flash('Данные успешно сохранены!', 'success')
+            # Перенаправление на страницу результатов расклада с передачей card_id
+            return render_template('tarot_result.html', card_id=card_id, get_card_by_id=get_card_by_id)
 
-                page = request.args.get('page', 1, type=int)
-                per_page = 10
-                offset = (page - 1) * per_page
-
-                query = 'SELECT u.username, u.jobpos FROM users u LEFT JOIN tarot t ON u.id = t.user_id'
-                if jobpos_filter:
-                    query += ' WHERE u.jobpos = ?'
-                    users = conn.execute(query, (jobpos_filter,)).fetchall()
-                else:
-                    users = conn.execute(query).fetchall()
-
-                total_users = len(users)
-                users = users[offset:offset + per_page]
-
-                total_pages = (total_users + per_page - 1) // per_page
-
-                job_positions = conn.execute('SELECT DISTINCT jobpos FROM users').fetchall()
-
-            return render_template('tarot_result.html',
-                                   user_id=user_id,
-                                   bday=bday,
-                                   bmonth=bmonth,
-                                   byear=byear,
-                                   jobpos=jobpos,
-                                   card_name=card['name'],
-                                   card_description=card['description'],
-                                   users=users,
-                                   total_pages=total_pages,
-                                   current_page=page,
-                                   jobpos_filter=jobpos_filter,
-                                   job_positions=job_positions)  # Передаем уникальные должности
         except Exception as e:
-            flash(f'Произошла ошибка при сохранении данных: {e}', 'error')
+            flash(f'Произошла ошибка: {e}', 'error')
             return redirect(url_for('index'))
         finally:
             conn.close()
     else:
         flash("Пожалуйста, войдите, чтобы сохранить данные.", "error")
         return redirect(url_for('index'))
-
+    
 @app.route('/check_user', methods=['POST'])
 def check_user():
     if 'user_id' in session:

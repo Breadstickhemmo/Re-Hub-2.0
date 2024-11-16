@@ -1,153 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Re Hub - Инновационный рекрутерский инструмент</title>
-  <link rel="stylesheet" href="../static/css/styles.css">
-  <link rel="stylesheet" href="../static/css/tarot.css">
-  <link rel="icon" href="../static/img/favicon.png" type="image/png">
-</head>
-<body>
-    <!-- Header с названием сайта и кнопками регистрации и входа -->
-    <header>
-        <a href="{{ url_for('index') }}" class="site-title"><h1>Re Hub</h1></a>
-        <nav>
-            {% if 'username' in session %}
-            <a href="{{ url_for('profile') }}" class="user-profile">{{ session['username'] }}</a>
-                <form action="{{ url_for('logout') }}" method="post" style="display: inline;">
-                    <button type="submit" class="button-header">Выйти</button>
-                </form>
-            {% else %}
-                <button class="button-header" onclick="showRegister()">Регистрация</button>
-                <button class="button-header" onclick="showLogin()">Вход</button>
-            {% endif %}
-        </nav>
-    </header>
+{% extends 'base.html' %}
 
-    <!-- Затемнение фона -->
-    <div id="registration-overlay" style="display: none;" onclick="hideRegistration()"></div>
+{% block title %}Таро{% endblock %}
 
-    <!-- Форма регистрации -->
-    <section id="registration" style="display: none;">
-        <h2>Регистрация</h2>
-        <form id="registrationForm" action="/register" method="post">
-            <label for="username">Имя пользователя</label>
-            <input type="text" id="username" name="username" required>
-        
-            <label for="password">Пароль</label>
-            <input type="password" id="password" name="password" required>
-        
-            <button type="submit" class="button-register">Зарегистрироваться</button>
-        </form>
-        <button onclick="hideRegistration()" class="button-cancel">Отмена</button>
-    </section>
+{% block css %}
+<link rel="stylesheet" href="../static/css/tarot.css">
+{% endblock %}
 
-    <!-- Затемнение фона для формы логина -->
-    <div id="login-overlay" style="display: none;" onclick="hideLogin()"></div>
-
-    <!-- Форма логина -->
-    <section id="login" style="display: none;">
-        <h2>Вход</h2>
-        <form id="loginForm" action="/login" method="post">
-            <label for="login-username">Имя пользователя</label>
-            <input type="text" id="login-username" name="username" required>
-        
-            <label for="login-password">Пароль</label>
-            <input type="password" id="login-password" name="password" required>
-        
-            <button type="submit" class="button-login">Войти</button>
-        </form>        
-        <button onclick="hideLogin()" class="button-cancel-login">Отмена</button>
-    </section>
-
+{% block content %}
     <main>
         <div class="tarot-result-container">
             <h2 class="result-title">Результат расклада Таро</h2>
+            {% if card_id %}
+            {% set card = get_card_by_id(card_id) %}
             <div class="card-selection">
-                <p><strong class="card-name">{{ card_name }}</strong></p>
-                <p class="card-description">{{ card_description }}</p>
+                <p><strong class="card-name">{{ card.name }}</strong></p>
+                <p class="card-description">{{ card.description }}</p>
             </div>
-            <h3 class="users-title">Список пользователей</h3>
-            <!-- Форма фильтрации -->
-            <div class="filter-section">
-                <form action="/tarot_result" method="post">
-                    <label for="jobpos_filter">Фильтр по должности:</label>
-                    <select id="jobpos_filter" name="jobpos_filter">
-                        <option value="">Все</option>
-                        {% for position in job_positions %}
-                            <option value="{{ position.jobpos }}" {% if jobpos_filter == position.jobpos %}selected{% endif %}>{{ position.jobpos }}</option>
-                        {% endfor %}
-                    </select>
-                    <input type="hidden" name="birth_day" value="{{ bday }}">
-                    <input type="hidden" name="birth_month" value="{{ bmonth }}">
-                    <input type="hidden" name="birth_year" value="{{ byear }}">
-                    <input type="hidden" name="position" value="{{ jobpos }}">
-                    <button type="submit" class="button-filter">Фильтровать</button>
-                </form>
-            </div>
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>{{ session['username'] }}</th>
-                        <th>{{ jobpos }}</th>
-                        <th>Совместимость</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    {% if user.username != session['username'] %}
-                    <tr>
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.jobpos }}</td>
-                        <td>
-                            <form action="/check_user" method="post">
-                                <input type="hidden" name="username" value="{{ user.username }}">
-                                <button type="submit" class="button-check">Проверить</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-    
-            <!-- Пагинация -->
-            <div class="pagination">
-                {% if current_page > 1 %}
-                    <a href="{{ url_for('tarot_result', page=current_page - 1, jobpos_filter=jobpos_filter) }}">« Назад</a>
-                {% endif %}
-                {% for page_num in range(1, total_pages + 1) %}
-                    {% if page_num == current_page %}
-                        <strong>{{ page_num }}</strong>
-                    {% else %}
-                        <a href="{{ url_for('tarot_result', page=page_num, jobpos_filter=jobpos_filter) }}">{{ page_num }}</a>
-                    {% endif %}
-                {% endfor %}
-                {% if current_page < total_pages %}
-                    <a href="{{ url_for('tarot_result', page=current_page + 1, jobpos_filter=jobpos_filter) }}">Вперед »</a>
-                {% endif %}
-            </div>
+            {% else %}
+                <p>Нет данных для отображения.</p>
+            {% endif %}
         </div>
     </main>
-
-    <!-- Footer с информацией о компании и ссылками на соцсети -->
-    <footer>
-        <p>&copy; 2024 Re Hub. Все права защищены.</p>
-        <div class="social-links">
-        <a href="https://t.me/Doma_superbl">Telegram</a>
-        </div>
-    </footer>
-
-    <script src="../static/js/script.js"></script>
-</body>
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class="flash-messages">
-      {% for category, message in messages %}
-        <li class="flash-message {{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-</html>
+{% endblock %}
