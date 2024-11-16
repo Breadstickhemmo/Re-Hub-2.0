@@ -73,3 +73,21 @@ function toggleProfessionalEdit() {
         section.style.display = 'none';
     }
 }
+
+function toggleEmployerEdit() {
+    const employerEditSection = document.getElementById('employerEditSection');
+    if (employerEditSection.style.display === 'none' || employerEditSection.style.display === '') {
+        employerEditSection.style.display = 'block';
+    } else {
+        employerEditSection.style.display = 'none';
+    }
+}
+
+function toggleBusinessEdit() {
+    const additionalOptions = document.getElementById('additionalBusinessOptions');
+    if (additionalOptions.style.display === 'none' || additionalOptions.style.display === '') {
+        additionalOptions.style.display = 'block'; // Показываем дополнительные опции
+    } else {
+        additionalOptions.style.display = 'none'; // Скрываем дополнительные опции
+    }
+}

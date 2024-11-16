@@ -46,7 +46,7 @@ body {
     box-sizing: border-box;
     text-align: center;
     position: relative;
-    transition: background-color 0.3s ease, transform 0.3s ease, width 0.3s ease; /* Плавный переход цвета */
+    transition: background-color 0.3s ease, transform 0.3s ease, width 0.3s ease;
     overflow: hidden;
 }
 
@@ -60,7 +60,7 @@ body {
 }
 
 .tarot-option {
-    background-color: #b3b3b3;
+    background-color: #0C6565;
 }
 
 .tarot-option:hover {
@@ -69,11 +69,11 @@ body {
 }
 
 .cosmos-option {
-    background-color: #808080;
+    background-color: #0C6565;
 }
 
 .cosmos-option:hover {
-    background-color: #0C6565;
+    background-color: #FE982D;
     width: 100%;
 }
 

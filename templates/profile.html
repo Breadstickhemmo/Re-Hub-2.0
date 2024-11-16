@@ -47,7 +47,49 @@
           <button type="submit" class="button-update">Обновить информацию</button>
       </form>
   </div>
-</section>  
+</section>
+<section id="business-section">
+  <h2 onclick="toggleBusinessEdit()" style="cursor: pointer;">Мой бизнес</h2>
+  <div id="businessEditSection">
+    <div id="additionalBusinessOptions" style="display: none;">
+      <form id="businessForm" action="/manage_business" method="post">
+          <label for="business_name">Название бизнеса</label>
+          <input type="text" id="business_name" name="business_name" value="{{ session['business_name'] if session['business_name'] else '' }}" required>
+          <button type="submit" class="button-save">Сохранить бизнес</button>
+      </form>
+
+      {% if session['business_name'] %} <!-- Скрываем изначально -->
+          <h3>Добавить должность</h3>
+          <form id="addPositionForm" action="/add_position" method="post">
+              <label for="position">Должность</label>
+              <input type="text" id="position" name="position" required>
+              <button type="submit" class="button-save">Добавить должность</button>
+          </form>
+
+          <h3>Удалить должность</h3>
+          <form id="removePositionForm" action="/remove_position" method="post">
+              <label for="remove_position">Выберите должность для удаления</label>
+              <select id="remove_position" name="position" required>
+                  <!-- Здесь будут динамически добавляться должности -->
+                  {% if user_business %}
+                      {% for position in user_business.job_positions.split(',') %}
+                          <option value="{{ position }}">{{ position }}</option>
+                      {% endfor %}
+                  {% endif %}
+              </select>
+              <button type="submit" class="button-save">Удалить должность</button>
+          </form>
+
+          <h3>Добавить рекрутера</h3>
+          <form id="addRecruiterForm" action="/add_recruiter" method="post">
+              <label for="recruiter_username">Логин рекрутера</label>
+              <input type="text" id="recruiter_username" name="recruiter_username" required>
+              <button type="submit" class="button-save">Добавить рекрутера</button>
+          </form>
+      </div>
+      {% endif %}
+  </div>
+</section>
 <section class="change_password">
     <h3 onclick="togglePasswordChange()" style="cursor: pointer;">Изменить пароль</h3>
     <div id="changePasswordSection" style="display: none;">

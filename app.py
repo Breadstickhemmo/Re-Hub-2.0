@@ -30,8 +30,19 @@ def init_db():
                 father_name TEXT,
                 phone TEXT,
                 company_info TEXT,
-                personal_traits TEXT, -- Личные качества
-                professional_traits TEXT -- Профессиональные качества
+                jobpos TEXT,
+                personal_traits TEXT,
+                professional_traits TEXT
+            )
+        ''')
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS businesses (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                business_name TEXT NOT NULL,
+                job_positions TEXT,
+                recruiter_id INTEGER,
+                FOREIGN KEY (user_id) REFERENCES users (id)
             )
         ''')
         conn.execute('''
@@ -41,7 +52,6 @@ def init_db():
                 bday INTEGER,
                 bmonth INTEGER,
                 byear INTEGER,
-                jobpos TEXT,
                 card_id INTEGER,
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
@@ -104,6 +114,7 @@ def login():
     if user and check_password_hash(user['password'], password):
         session['user_id'] = user['id']
         session['username'] = user['username']
+        session['jobpos'] = user['jobpos']  # Сохраняем должность в сессии
         flash('Вы успешно вошли!', 'success')
         return redirect(url_for('index'))
     else:
@@ -117,12 +128,20 @@ def logout():
     flash('Вы вышли из системы.')
     return redirect(url_for('index'))
 
-@app.route('/profile', methods=['POST'])
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if 'username' in session:
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM users WHERE username = ?', (session['username'],)).fetchone()
+        business = conn.execute('SELECT business_name FROM businesses WHERE user_id = ?', (user['id'],)).fetchone()
         conn.close()
+        
+        # Сохраняем business_name в сессии, если он существует
+        if business:
+            session['business_name'] = business['business_name']
+        else:
+            session['business_name'] = None
+            
         return render_template('profile.html', user=user)
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к профилю.", "error")
@@ -211,6 +230,107 @@ def update_traits():
         flash("Пожалуйста, войдите для выполнения этого действия.", "error")
         return redirect(url_for('index'))
 
+@app.route('/manage_business', methods=['POST'])
+def manage_business():
+    if 'user_id' in session:
+        business_name = request.form['business_name']
+        user_id = session['user_id']
+
+        conn = get_db_connection()
+        try:
+            # Проверяем, существует ли уже бизнес для этого пользователя
+            existing_business = conn.execute('SELECT * FROM businesses WHERE user_id = ?', (user_id,)).fetchone()
+            if existing_business:
+                # Обновляем существующий бизнес
+                conn.execute('UPDATE businesses SET business_name = ? WHERE user_id = ?',
+                             (business_name, user_id))
+            else:
+                # Вставляем новый бизнес
+                conn.execute('INSERT INTO businesses (user_id, business_name) VALUES (?, ?)',
+                             (user_id, business_name))  # Рекрутер - это текущий пользователь
+            conn.commit()
+            flash("Информация о бизнесе успешно обновлена.", "success")
+        except Exception as e:
+            flash(f'Произошла ошибка: {e}', 'error')
+        finally:
+            conn.close()
+        
+        return redirect(url_for('profile'))
+    else:
+        flash("Пожалуйста, войдите для выполнения этого действия.", "error")
+        return redirect(url_for('index'))
+
+@app.route('/add_position', methods=['POST'])
+def add_position():
+    if 'user_id' in session:
+        position = request.form['position']
+        user_id = session['user_id']
+
+        conn = get_db_connection()
+        try:
+            conn.execute('UPDATE businesses SET job_positions = job_positions || ? WHERE user_id = ?',
+                         (',' + position, user_id))
+            conn.commit()
+            flash("Должность успешно добавлена.", "success")
+        except Exception as e:
+            flash(f'Произошла ошибка: {e}', 'error')
+        finally:
+            conn.close()
+
+        return redirect(url_for('profile'))
+    else:
+        flash("Пожалуйста, войдите для выполнения этого действия.", "error")
+        return redirect(url_for('index'))
+
+@app.route('/remove_position', methods=['POST'])
+def remove_position():
+    if 'user_id' in session:
+        position = request.form['position']
+        user_id = session['user_id']
+
+        conn = get_db_connection()
+        try:
+            # Удаляем должность
+            conn.execute('UPDATE businesses SET job_positions = REPLACE(job_positions, ?, "") WHERE user_id = ?',
+                         (',' + position, user_id))
+            conn.commit()
+            flash("Должность успешно удалена.", "success")
+        except Exception as e:
+            flash(f'Произошла ошибка: {e}', 'error')
+        finally:
+            conn.close()
+
+        return redirect(url_for('profile'))
+    else:
+        flash("Пожалуйста, войдите для выполнения этого действия.", "error")
+        return redirect(url_for('index'))
+
+@app.route('/add_recruiter', methods=['POST'])
+def add_recruiter():
+    if 'user_id' in session:
+        recruiter_username = request.form['recruiter_username']
+        user_id = session['user_id']
+
+        conn = get_db_connection()
+        try:
+            # Получаем ID рекрутера по логину
+            recruiter = conn.execute('SELECT id FROM users WHERE username = ?', (recruiter_username,)).fetchone()
+            if recruiter:
+                conn.execute('UPDATE businesses SET recruiter_id = ? WHERE user_id = ?', (recruiter['id'], user_id))
+                conn.commit()
+                flash("Рекрутер успешно добавлен.", "success")
+            else:
+                flash("Рекрутер не найден.", "error")
+        except Exception as e:
+            flash(f'Произошла ошибка: {e}', 'error')
+        finally:
+            conn.close()
+
+        return redirect(url_for('profile'))
+    else:
+        flash("Пожалуйста, войдите для выполнения этого действия.", "error")
+        return redirect(url_for('index'))
+
 @app.route('/tarot', methods=['POST'])
 def tarot():
     if 'username' in session:
@@ -218,7 +338,7 @@ def tarot():
 
         conn = get_db_connection()
         existing_entry = conn.execute(
-            'SELECT bday, bmonth, byear, jobpos FROM tarot WHERE user_id = ?',
+            'SELECT bday, bmonth, byear FROM tarot WHERE user_id = ?',
             (user_id,)
         ).fetchone()
         conn.close()
@@ -228,9 +348,9 @@ def tarot():
                                    bday=existing_entry['bday'], 
                                    bmonth=existing_entry['bmonth'], 
                                    byear=existing_entry['byear'], 
-                                   jobpos=existing_entry['jobpos'])
+                                   jobpos=session['jobpos'])
         else:
-            return render_template('tarot.html')
+            return render_template('tarot.html', jobpos=session['jobpos'])
     else:
         flash("Пожалуйста, войдите, чтобы получить доступ к раскладу.", "error")
         return redirect(url_for('index'))
@@ -250,7 +370,7 @@ def tarot_result():
         bday = request.form['birth_day']
         bmonth = request.form['birth_month']
         byear = request.form['birth_year']
-        jobpos = request.form['position']
+        jobpos = session['jobpos']
         jobpos_filter = request.form.get('jobpos_filter')
 
         card_id = calculate_date_value(bday, bmonth, byear)
@@ -291,9 +411,9 @@ def tarot_result():
                 per_page = 10
                 offset = (page - 1) * per_page
 
-                query = 'SELECT u.username, t.jobpos FROM users u LEFT JOIN tarot t ON u.id = t.user_id'
+                query = 'SELECT u.username, u.jobpos FROM users u LEFT JOIN tarot t ON u.id = t.user_id'
                 if jobpos_filter:
-                    query += ' WHERE t.jobpos = ?'
+                    query += ' WHERE u.jobpos = ?'
                     users = conn.execute(query, (jobpos_filter,)).fetchall()
                 else:
                     users = conn.execute(query).fetchall()
@@ -303,7 +423,7 @@ def tarot_result():
 
                 total_pages = (total_users + per_page - 1) // per_page
 
-                job_positions = conn.execute('SELECT DISTINCT jobpos FROM tarot').fetchall()
+                job_positions = conn.execute('SELECT DISTINCT jobpos FROM users').fetchall()
 
             return render_template('tarot_result.html',
                                    user_id=user_id,
