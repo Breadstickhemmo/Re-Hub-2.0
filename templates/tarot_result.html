@@ -1,24 +1,49 @@
 {% extends 'base.html' %}
 
-{% block title %}Таро{% endblock %}
+{% block title %}Результат расклада Таро{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="../static/css/tarot.css">
 {% endblock %}
 
 {% block content %}
-    <main>
-        <div class="tarot-result-container">
-            <h2 class="result-title">Результат расклада Таро</h2>
-            {% if card_id %}
-            {% set card = get_card_by_id(card_id) %}
-            <div class="card-selection">
-                <p><strong class="card-name">{{ card.name }}</strong></p>
-                <p class="card-description">{{ card.description }}</p>
-            </div>
-            {% else %}
-                <p>Нет данных для отображения.</p>
-            {% endif %}
+<main>
+    <div class="tarot-result-container">
+        <h2 class="result-title">Результат расклада Таро</h2>
+        {% if card_id %}
+        {% set card = get_card_by_id(card_id) %}
+        <div class="card-selection">
+            <p><strong class="card-name">{{ card.name }}</strong></p>
+            <p class="card-description">{{ card.description }}</p>
         </div>
-    </main>
+        {% else %}
+            <p>Нет данных для отображения.</p>
+        {% endif %}
+
+        <form action="{{ url_for('check_user') }}" method="post">
+            <div class="candidate-selection">
+                <label for="candidate_username">Выберите кандидата:</label>
+                <select id="candidate_username" name="candidate_username">
+                    <option value="">-- Выберите кандидата --</option>
+                    {% for candidate in candidates %}
+                        <option value="{{ candidate.username }}">{{ candidate.username }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="candidate_manual" placeholder="Введите логин кандидата">
+            </div>
+
+            <div class="employee-selection">
+                <label for="employee_username">Выберите сотрудника:</label>
+                <input list="employee_list" name="employee_username" id="employee_username" placeholder="Введите логин сотрудника">
+                <datalist id="employee_list">
+                    {% for employee in employees %}
+                        <option value="{{ employee.username }}">{{ employee.username }}</option>
+                    {% endfor %}
+                </datalist>
+            </div>
+
+            <button type="submit" class="button">Рассчитать совместимость</button>
+        </form>
+    </div>
+</main>
 {% endblock %}

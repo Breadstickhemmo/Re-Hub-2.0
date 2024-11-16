@@ -91,3 +91,12 @@ function toggleBusinessEdit() {
         additionalOptions.style.display = 'none'; // Скрываем дополнительные опции
     }
 }
+
+function toggleEmployeesSection() {
+    const employeesEditSection = document.getElementById('employeesEditSection');
+    if (employeesEditSection.style.display === 'none' || employeesEditSection.style.display === '') {
+        employeesEditSection.style.display = 'block';
+    } else {
+        employeesEditSection.style.display = 'none';
+    }
+}

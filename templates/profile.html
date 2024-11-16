@@ -99,6 +99,42 @@
       {% endif %}
   </div>
 </section>
+<section class="employees-section">
+  <h3 onclick="toggleEmployeesSection()" style="cursor: pointer;">Управление сотрудниками</h3>
+  <div id="employeesEditSection" style="display: none;">
+      <h4>Добавить сотрудника</h4>
+      <form action="/add_employee" method="post">
+          <label for="business_name_add">Выберите компанию:</label>
+          <select id="business_name_add" name="business_name" required>
+              {% for business in businesses %}
+                  <option value="{{ business.business_name }}">{{ business.business_name }}</option>
+              {% endfor %}
+          </select>
+
+          <label for="candidate_username">Имя пользователя кандидата:</label>
+          <input type="text" id="candidate_username" name="candidate_username" required>
+          <button type="submit" class="button-save">Добавить</button>
+      </form>
+
+      <h4>Удалить сотрудника</h4>
+      <form action="/remove_employee" method="post">
+          <label for="business_name_remove">Выберите компанию:</label>
+          <select id="business_name_remove" name="business_name" required>
+              {% for business in businesses %}
+                  <option value="{{ business.business_name }}">{{ business.business_name }}</option>
+              {% endfor %}
+          </select>
+      
+          <label for="remove_employee">Выберите сотрудника для удаления:</label>
+          <select id="remove_employee" name="employee_username" required>
+              {% for employee in employees %}
+                  <option value="{{ employee.username }}">{{ employee.username }}</option>
+              {% endfor %}
+          </select>
+          <button type="submit" class="button-save">Удалить</button>
+      </form>
+  </div>
+</section>
 <section class="change_password">
     <h3 onclick="togglePasswordChange()" style="cursor: pointer;">Изменить пароль</h3>
     <div id="changePasswordSection" style="display: none;">

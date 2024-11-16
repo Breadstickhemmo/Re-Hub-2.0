@@ -124,3 +124,41 @@ h3 {
     color: #2C2C2C; /* Цвет заголовка секции */
     margin-bottom: 10px; /* Отступ снизу */
 }
+
+.employees-section {
+    background-color: #fff; /* Белый фон для секции */
+    border-radius: 20px; /* Закругленные углы */
+    padding: 20px; /* Отступы внутри секции */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Тень для секции */
+    margin-top: 20px; /* Отступ сверху */
+}
+
+.employees-section h3 {
+    cursor: pointer; /* Указатель на курсор */
+    color: #2C2C2C; /* Цвет заголовка секции */
+    margin-bottom: 10px; /* Отступ снизу */
+}
+
+.employees-section form {
+    margin-top: 15px; /* Отступ сверху для форм */
+}
+
+.employees-section label {
+    font-weight: bold; /* Жирный шрифт для меток */
+    margin-top: 10px; /* Отступ сверху для меток */
+}
+
+.button-save {
+    background-color: #FE982D; /* Цвет кнопки */
+    color: white; /* Цвет текста кнопки */
+    border: none; /* Без границ */
+    border-radius: 5px; /* Закругленные углы */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    font-size: 18px; /* Размер шрифта кнопки */
+    cursor: pointer; /* Указатель на курсор */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+}
+
+.button-save:hover {
+    background-color: #e68a1c; /* Цвет кнопки при наведении */
+}
